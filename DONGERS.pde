@@ -13,6 +13,7 @@ PVector imgPos = new PVector(0, 0);    // Image x/y position
 PVector imgTempPos = new PVector(0, 0);    // Image temp x/y position used for drawing
 PVector mouseDownPos, mouseUpPos;    // Track the location of the mouse being pressed and released
 boolean shiftHeld = false;
+boolean showGrid = true;
 
 void setup() {
     size(600, 600);
@@ -43,7 +44,9 @@ void draw() {
         and
         sx, sy, sw, sh  = the part of the image to draw (measured in pixels) 
         */
-        image(grid, 0, 0);  
+        if (showGrid) {
+            image(grid, 0, 0);
+        }
     }
 }
 
@@ -87,14 +90,18 @@ void mouseReleased() {
 
 void keyPressed() {
     switch (keyCode) {
-        case 16: shiftHeld = true; break;    
+        // Shift
+        case 16: shiftHeld = true; break;
+        // G
+        case 71: showGrid = !showGrid; break;
     }
 }
 
 void keyReleased() {
     println("keyReleased: ", keyCode);
     switch (keyCode) {
-        case 16: shiftHeld = false; break;    
+        // Shift
+        case 16: shiftHeld = false; break;
     }
 }
 
