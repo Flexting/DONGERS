@@ -34,18 +34,19 @@ void initialise() {
 }
 
 void draw() {
+    PVector imgOffset = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     background(200);
-    translate(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
+    translate(imgOffset.x, imgOffset.y);
     scale(zoom);
     
     if (inputImage != null) {
         // ***** After checking remove code from here
-        float dx = (imgPos.x < 0) ? (-imgPos.x + 5) : 5,
-              dy = (imgPos.y < 0) ? (-imgPos.y + 5) : 5,
-              dw = (imgPos.x < 0) ? max(0, min(inputImage.width + imgPos.x, width - 10)) : max(0, (width - imgPos.x - 10)),
-              dh = (imgPos.y < 0) ? max(0, min(inputImage.height + imgPos.y, height - 10)) : max(0, (height - imgPos.y - 10));
-        int   sx1 = (imgPos.x < 0) ? ((int) -imgPos.x) : 0,
-              sy1 = (imgPos.y < 0) ? ((int) -imgPos.y) : 0,
+        float dx = (imgOffset.x < 0) ? (-imgOffset.x + 5) : 5,
+              dy = (imgOffset.y < 0) ? (-imgOffset.y + 5) : 5,
+              dw = (imgOffset.x < 0) ? max(0, min(inputImage.width + imgOffset.x, width - 10)) : max(0, (width - imgOffset.x - 10)),
+              dh = (imgOffset.y < 0) ? max(0, min(inputImage.height + imgOffset.y, height - 10)) : max(0, (height - imgOffset.y - 10));
+        int   sx1 = (imgOffset.x < 0) ? ((int) -imgOffset.x) : 0,
+              sy1 = (imgOffset.y < 0) ? ((int) -imgOffset.y) : 0,
               sx2 = sx1 + (int) dw,
               sy2 = sy1 + (int) dh;
         println("dxy: ", dx, dy);
@@ -58,12 +59,12 @@ void draw() {
         /* This one doesnt have the border
         // dx, dy, dw, dh = the area of your display that you want to draw to.
         // sx, sy, sw, sh = the part of the image to draw (measured in pixels) 
-        float dx = (imgPos.x < 0) ? (-imgPos.x) : 0,    // Draw image at x coord
-              dy = (imgPos.y < 0) ? (-imgPos.y) : 0,    // Draw image at y coord
-              dw = (imgPos.x < 0) ? max(0, min(inputImage.width + imgPos.x, width)) : max(0, (width - imgPos.x)),    // Draw image with width
-              dh = (imgPos.y < 0) ? max(0, min(inputImage.height + imgPos.y, height)) : max(0, (height - imgPos.y));    // Draw image with height
-        int   sx1 = (imgPos.x < 0) ? ((int) -imgPos.x) : 0,    // Use image region x1
-              sy1 = (imgPos.y < 0) ? ((int) -imgPos.y) : 0,    // Use image region y1
+        float dx = (imgOffset.x < 0) ? (-imgOffset.x) : 0,    // Draw image at x coord
+              dy = (imgOffset.y < 0) ? (-imgOffset.y) : 0,    // Draw image at y coord
+              dw = (imgOffset.x < 0) ? max(0, min(inputImage.width + imgOffset.x, width)) : max(0, (width - imgOffset.x)),    // Draw image with width
+              dh = (imgOffset.y < 0) ? max(0, min(inputImage.height + imgOffset.y, height)) : max(0, (height - imgOffset.y));    // Draw image with height
+        int   sx1 = (imgOffset.x < 0) ? ((int) -imgOffset.x) : 0,    // Use image region x1
+              sy1 = (imgOffset.y < 0) ? ((int) -imgOffset.y) : 0,    // Use image region y1
               sx2 = sx1 + (int) dw,    // Use image region x2
               sy2 = sy1 + (int) dh;    // Use image region y2
         */
