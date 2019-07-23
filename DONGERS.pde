@@ -9,8 +9,12 @@ float zoom = 1;    // Zoom level of the image
 // Don't Modify
 PImage inputImage;    // Image displayed on screen
 PGraphics grid;    // Grid displayed over the top of the image
+
 PVector imgPos = new PVector(0, 0);    // Image x/y position
 PVector imgTempPos = new PVector(0, 0);    // Image temp x/y position used for drawing
+PVector gridPos = new PVector(0, 0);    // Grid x/y position
+PVector gridTempPos = new PVector(0, 0);    // Grid temp x/y position used for dragging
+
 PVector mouseDownPos, mouseUpPos;    // Track the location of the mouse being pressed and released
 boolean shiftHeld = false;
 boolean showGrid = true;
@@ -45,6 +49,7 @@ void draw() {
         sx, sy, sw, sh  = the part of the image to draw (measured in pixels) 
         */
         if (showGrid) {
+            translate(gridTempPos.x, gridTempPos.y);
             image(grid, 0, 0);
         }
     }
@@ -77,8 +82,15 @@ void mousePressed() {
 }
 
 void mouseDragged() {
-    PVector mouseCurrentPos = new PVector(mouseX, mouseY);
-    imgTempPos = new PVector(mouseCurrentPos.x - mouseDownPos.x, mouseCurrentPos.y - mouseDownPos.y);
+    boolean dragGrid = shiftHeld;
+    PVector mouseCurrentPos = new PVector(mouseX, mouseY),
+            tempPos = new PVector(mouseCurrentPos.x - mouseDownPos.x, mouseCurrentPos.y - mouseDownPos.y); 
+    
+    if (dragGrid) {    
+        gridTempPos = tempPos;
+    } else {    
+        imgTempPos = tempPos;
+    }
 }
 
 // Set the imgPos to the imgTempPos and reset the imgTempPos
@@ -86,6 +98,10 @@ void mouseReleased() {
     mouseUpPos = new PVector(mouseX, mouseY);
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     imgTempPos = new PVector(0, 0);
+    
+    gridPos = new PVector((gridSize + gridPos.x + gridTempPos.x) % gridSize, (gridSize + gridPos.y + gridTempPos.y) % gridSize);
+    gridTempPos = new PVector(0, 0);
+    createGrid();
 }
 
 void keyPressed() {
@@ -109,12 +125,12 @@ void createGrid() {
     grid = createGraphics(inputImage.width, inputImage.height);
     grid.beginDraw();
     grid.stroke(0, 40);
-    for (int j = 0; j < grid.height / gridSize; j++) {
-        for (int i = 0; i < grid.width / gridSize; i++) {
-            float x1 = gridSize * i;
-            float y1 = gridSize * j;
-            float x2 = inputImage.width - 1;
-            float y2 = inputImage.height - 1;
+    for (int j = -1; j < grid.height / gridSize; j++) {
+        for (int i = -1; i < grid.width / gridSize; i++) {
+            float x1 = gridSize * i + gridPos.x;
+            float y1 = gridSize * j + gridPos.y;
+            float x2 = inputImage.width - 1 + gridPos.x;
+            float y2 = inputImage.height - 1 + gridPos.y;
             
             grid.line(x1, y1, x2, y1);
             grid.line(x1, y1, x1, y2);
