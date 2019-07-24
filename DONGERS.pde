@@ -34,6 +34,7 @@ void initialise() {
     createGrid();
     
     menu = new Menu();
+    menu.addItem(new ToggleGridButton());
     // Add Menu items here
 }
 
@@ -122,7 +123,7 @@ void keyPressed() {
         // Shift
         case 16: shiftHeld = true; break;
         // G
-        case 71: showGrid = !showGrid; break;
+        case 71: toggleGrid(); break;
     }
 }
 
@@ -156,4 +157,8 @@ void scaleImageToScreen(PImage input) {
     PImage img = input.copy();
     // This function needs to change to set the zoom value not resize the image
     inputImage = img;
+}
+
+void toggleGrid() {
+    showGrid = !showGrid;
 }
