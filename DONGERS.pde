@@ -7,6 +7,7 @@ float minGridSize = 10;
 float zoom = 1;    // Zoom level of the image
 
 // Don't Modify
+Menu menu;
 PImage inputImage;    // Image displayed on screen
 PGraphics grid;    // Grid displayed over the top of the image
 
@@ -31,14 +32,18 @@ void initialise() {
     
     scaleImageToScreen(inputImage);
     createGrid();
+    
+    menu = new Menu();
+    // Add Menu items here
 }
 
 void draw() {
     background(200);
-    translate(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
-    scale(zoom);
     if (inputImage != null) {
-        image(inputImage, 0, 0);  
+        pushMatrix();
+            translate(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
+            scale(zoom);
+            image(inputImage, 0, 0); 
         //image(modifiedImage, 0, 0, 100, 100, 0, 0, 100, 100);    // Only draw what you can see
         /*
         image(img, dx, dy, dw, dh, sx, sy, sw, sh);
@@ -52,7 +57,10 @@ void draw() {
             translate(gridTempPos.x, gridTempPos.y);
             image(grid, 0, 0);
         }
+        popMatrix(); 
     }
+    
+    menu.display();
 }
 
 void imageChosen(File file) {
@@ -78,10 +86,14 @@ void mouseWheel(MouseEvent event) {
 }
 
 void mousePressed() {
-    mouseDownPos = new PVector(mouseX, mouseY);
+    boolean itemPressed = menu.mousePressed();
+    if (!itemPressed) {
+        mouseDownPos = new PVector(mouseX, mouseY);
+    }
 }
 
 void mouseDragged() {
+    if (mouseDownPos == null) return;
     boolean dragGrid = shiftHeld;
     PVector mouseCurrentPos = new PVector(mouseX, mouseY),
             tempPos = new PVector(mouseCurrentPos.x - mouseDownPos.x, mouseCurrentPos.y - mouseDownPos.y); 
@@ -95,6 +107,7 @@ void mouseDragged() {
 
 // Set the imgPos to the imgTempPos and reset the imgTempPos
 void mouseReleased() {
+    if (mouseDownPos == null) return;
     mouseUpPos = new PVector(mouseX, mouseY);
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     imgTempPos = new PVector(0, 0);
