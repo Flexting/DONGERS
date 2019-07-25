@@ -36,8 +36,6 @@ void initialise() {
 void draw() {
     PVector imgOffset = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     background(200);
-    translate(imgOffset.x, imgOffset.y);
-    scale(zoom);
     
     if (inputImage != null) {
         float dx = (imgOffset.x < 0) ? (-imgOffset.x) : 0,    // Draw image at x coord
@@ -59,14 +57,18 @@ void draw() {
         sx2 /= zoom;
         sy2 /= zoom;
         
-        if (sx1 < inputImage.width && sy1 < inputImage.height && sx2 > 0 && sy2 > 0) {
-            image(inputImage, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
-        }
-        
-        if (showGrid) {
-            translate(gridTempPos.x, gridTempPos.y);
-            image(grid, 0, 0);
-        }
+        pushMatrix();
+            if (sx1 < inputImage.width && sy1 < inputImage.height && sx2 > 0 && sy2 > 0) {
+                translate(imgOffset.x, imgOffset.y);
+                scale(zoom);
+                image(inputImage, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
+            }
+            
+            if (showGrid) {
+                translate(gridTempPos.x, gridTempPos.y);
+                image(grid, 0, 0);
+            }
+        popMatrix();
     }
 }
 
@@ -84,7 +86,6 @@ void mouseWheel(MouseEvent event) {
     
     if (imageZoom) {
         zoom += count / 10.0;
-        PVector mouseOffset = new PVector(mouseX, mouseY);
     } else {
         gridSize += 5 * count;
         gridSize = max(gridSize, minGridSize);
@@ -139,7 +140,7 @@ void keyReleased() {
 void createGrid() {
     grid = createGraphics(inputImage.width, inputImage.height);
     grid.beginDraw();
-    grid.stroke(0, 40);
+    grid.stroke(0, 60);
     for (int j = -1; j < grid.height / gridSize; j++) {
         for (int i = -1; i < grid.width / gridSize; i++) {
             float x1 = gridSize * i + gridPos.x;
