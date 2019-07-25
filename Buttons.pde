@@ -10,3 +10,15 @@ public class ToggleGridButton extends MenuItem {
         toggleGrid();
     }
 }
+
+public class LoadImageButton extends MenuItem {
+    
+    public LoadImageButton() {
+        super("open-icon.png");
+    }
+    
+    @Override
+    public void onPressed() {
+        selectInput("Select an image", "imageChosen");  
+    }
+}
