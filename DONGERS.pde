@@ -38,26 +38,41 @@ void initialise() {
 }
 
 void draw() {
+    PVector imgOffset = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     background(200);
+    
     if (inputImage != null) {
+        float dx = (imgOffset.x < 0) ? (-imgOffset.x) : 0,    // Draw image at x coord
+              dy = (imgOffset.y < 0) ? (-imgOffset.y) : 0,    // Draw image at y coord
+              dw = (imgOffset.x < 0) ? max(0, min(inputImage.width + imgOffset.x, width)) : max(0, (width - imgOffset.x)),    // Draw image with width
+              dh = (imgOffset.y < 0) ? max(0, min(inputImage.height + imgOffset.y, height)) : max(0, (height - imgOffset.y));    // Draw image with height
+        int   sx1 = (imgOffset.x < 0) ? ((int) -imgOffset.x) : 0,    // Use image region x1
+              sy1 = (imgOffset.y < 0) ? ((int) -imgOffset.y) : 0,    // Use image region y1
+              sx2 = sx1 + (int) dw,    // Use image region x2
+              sy2 = sy1 + (int) dh;    // Use image region y2
+              
+        // Update the values to work with the zoom level
+        dx /= zoom;
+        dy /= zoom;
+        dw /= zoom;
+        dh /= zoom;
+        sx1 /= zoom;
+        sy1 /= zoom;
+        sx2 /= zoom;
+        sy2 /= zoom;
+        
         pushMatrix();
-            translate(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
-            scale(zoom);
-            image(inputImage, 0, 0); 
-        //image(modifiedImage, 0, 0, 100, 100, 0, 0, 100, 100);    // Only draw what you can see
-        /*
-        image(img, dx, dy, dw, dh, sx, sy, sw, sh);
-
-        where
-        dx, dy, dw, dh   = the area of your display that you want to draw to.
-        and
-        sx, sy, sw, sh  = the part of the image to draw (measured in pixels) 
-        */
-        if (showGrid) {
-            translate(gridTempPos.x, gridTempPos.y);
-            image(grid, 0, 0);
-        }
-        popMatrix(); 
+            if (sx1 < inputImage.width && sy1 < inputImage.height && sx2 > 0 && sy2 > 0) {
+                translate(imgOffset.x, imgOffset.y);
+                scale(zoom);
+                image(inputImage, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
+            }
+            
+            if (showGrid) {
+                translate(gridTempPos.x, gridTempPos.y);
+                image(grid, 0, 0);
+            }
+        popMatrix();
     }
     
     menu.display();
@@ -77,7 +92,6 @@ void mouseWheel(MouseEvent event) {
     
     if (imageZoom) {
         zoom += count / 10.0;
-        PVector mouseOffset = new PVector(mouseX, mouseY);
     } else {
         gridSize += 5 * count;
         gridSize = max(gridSize, minGridSize);
@@ -137,7 +151,7 @@ void keyReleased() {
 void createGrid() {
     grid = createGraphics(inputImage.width, inputImage.height);
     grid.beginDraw();
-    grid.stroke(0, 40);
+    grid.stroke(0, 60);
     for (int j = -1; j < grid.height / gridSize; j++) {
         for (int i = -1; i < grid.width / gridSize; i++) {
             float x1 = gridSize * i + gridPos.x;
