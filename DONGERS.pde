@@ -68,6 +68,7 @@ void draw() {
             if (sx1 < inputImage.width && sy1 < inputImage.height && sx2 > 0 && sy2 > 0) {
                 translate(imgOffset.x, imgOffset.y);
                 scale(zoom);
+                imageMode(CORNER);
                 image(inputImage, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
             }
             
