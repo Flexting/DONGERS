@@ -83,7 +83,7 @@ void draw() {
 }
 
 void imageChosen(File file) {
-    if(file.exists()) {
+    if (file != null && file.exists()) {
         inputImage = loadImage(file.getAbsolutePath()); 
         scaleImageToScreen(inputImage);
         createGrid();
@@ -108,6 +108,8 @@ void mousePressed() {
     boolean itemPressed = menu.mousePressed();
     if (!itemPressed) {
         mouseDownPos = new PVector(mouseX, mouseY);
+    } else {
+        mouseDownPos = null;
     }
 }
 
