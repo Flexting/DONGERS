@@ -2,7 +2,7 @@
 public abstract class MenuItem {
     static final int size = 32;
     String buttonName;
-    PImage img = loadImage(sketchPath() + "/images/RotateLeft.png");
+    PImage img;
     PGraphics maskImg;
     PVector pos = null;
     boolean hovered = false;
