@@ -135,7 +135,6 @@ void mouseReleased() {
     
     gridPos = new PVector((gridSize + gridPos.x + gridTempPos.x) % gridSize, (gridSize + gridPos.y + gridTempPos.y) % gridSize);
     gridTempPos = new PVector(0, 0);
-    createGrid();
 }
 
 void keyPressed() {
@@ -156,6 +155,7 @@ void keyReleased() {
 }
 
 void createGrid() {
+    if (gridSize == minGridSize) return;
     grid = createGraphics(inputImage.width, inputImage.height);
     grid.beginDraw();
     grid.stroke(0, 60);
