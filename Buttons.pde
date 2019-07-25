@@ -1,6 +1,5 @@
 
 public class ToggleGridButton extends MenuItem {
-    
     public ToggleGridButton() {
         super("grid-icon.png");
     }
@@ -12,7 +11,6 @@ public class ToggleGridButton extends MenuItem {
 }
 
 public class LoadImageButton extends MenuItem {
-    
     public LoadImageButton() {
         super("open-icon.png");
     }
@@ -20,5 +18,16 @@ public class LoadImageButton extends MenuItem {
     @Override
     public void onPressed() {
         selectInput("Select an image", "imageChosen");  
+    }
+}
+
+public class RotateImageRightButton extends MenuItem {
+    public RotateImageRightButton() {
+        super("rotate-right-icon.png");
+    }
+    
+    @Override
+    public void onPressed() {
+        rotateImageRight();  
     }
 }

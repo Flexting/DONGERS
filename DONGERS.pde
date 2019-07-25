@@ -36,8 +36,7 @@ void initialise() {
     menu = new Menu();
     menu.addItem(new ToggleGridButton());
     menu.addItem(new LoadImageButton());
-    
-    // Add Menu items here
+    menu.addItem(new RotateImageRightButton());
 }
 
 void draw() {
@@ -181,4 +180,18 @@ void scaleImageToScreen(PImage input) {
 
 void toggleGrid() {
     showGrid = !showGrid;
+}
+
+void rotateImageRight() {
+    PImage img = new PImage(inputImage.height, inputImage.width);
+    
+    img.loadPixels();
+    for (int x = 0; x < inputImage.width; x++) {
+        for (int y = 0; y < inputImage.height; y++) {
+            img.pixels[(img.width - 1 - y) + x * img.width] = inputImage.pixels[x + y * inputImage.width];
+        }
+    }
+    img.updatePixels();
+    inputImage = img.copy();
+    createGrid();
 }
