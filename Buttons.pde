@@ -31,3 +31,14 @@ public class RotateImageRightButton extends MenuItem {
         rotateImageRight();  
     }
 }
+
+public class ResetButton extends MenuItem {
+    public ResetButton() {
+        super("reset-icon.png");
+    }
+    
+    @Override
+    public void onPressed() {
+        resetImage();  
+    }
+}
