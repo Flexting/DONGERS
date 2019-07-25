@@ -1,6 +1,6 @@
 
 public abstract class MenuItem {
-    static final int diameter = 32;
+    static final int size = 32;
     String buttonName;
     PImage img = loadImage(sketchPath() + "/images/RotateLeft.png");
     PGraphics maskImg;
@@ -9,32 +9,18 @@ public abstract class MenuItem {
     
     public MenuItem(String imgPath) {
         img = loadImage(sketchPath() + "/images/" + imgPath);
-        createMask();
-    }
-    
-    // Create a mask used to make the images used display circular.
-    private void createMask() {
-        maskImg = createGraphics(img.width, img.height);
-        maskImg.beginDraw();
-            maskImg.stroke(0);
-            maskImg.fill(255);
-            maskImg.ellipse(img.width/2.0, img.height/2.0, img.width, img.height);
-            maskImg.endDraw();
-        img.mask(maskImg);
     }
     
     public void display() {
         isHovered();
         if (hovered) {
-            stroke(200, 200, 0);
-        } else {
             stroke(0);
+            fill(0);
+            rect(pos.x - size/2.0, pos.y - size/2.0, size, size);
         }
+        
         imageMode(CENTER);
-        image(img, pos.x, pos.y, diameter, diameter);
-        noFill();
-        strokeWeight(2);
-        ellipse(pos.x, pos.y, diameter, diameter);
+        image(img, pos.x, pos.y, size, size);
     }
     
     boolean isHovered() {
@@ -42,7 +28,7 @@ public abstract class MenuItem {
         
         if (pos != null) {
             float dist = PVector.dist(pos, new PVector(mouseX, mouseY));
-            isHovered = (dist < diameter / 2.0);
+            isHovered = (dist < size/2.0);
         }
         
         this.hovered = isHovered;
