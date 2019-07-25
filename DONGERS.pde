@@ -40,25 +40,6 @@ void draw() {
     scale(zoom);
     
     if (inputImage != null) {
-        // ***** After checking remove code from here
-        float dx = (imgOffset.x < 0) ? (-imgOffset.x + 5) : 5,
-              dy = (imgOffset.y < 0) ? (-imgOffset.y + 5) : 5,
-              dw = (imgOffset.x < 0) ? max(0, min(inputImage.width + imgOffset.x, width - 10)) : max(0, (width - imgOffset.x - 10)),
-              dh = (imgOffset.y < 0) ? max(0, min(inputImage.height + imgOffset.y, height - 10)) : max(0, (height - imgOffset.y - 10));
-        int   sx1 = (imgOffset.x < 0) ? ((int) -imgOffset.x) : 0,
-              sy1 = (imgOffset.y < 0) ? ((int) -imgOffset.y) : 0,
-              sx2 = sx1 + (int) dw,
-              sy2 = sy1 + (int) dh;
-        println("dxy: ", dx, dy);
-        println("dwh: ", dw, dh);
-        println("sxy1: ", sx1, sy1);
-        println("sxy2: ", sx2, sy2);
-        println("zoom: ", zoom);
-        // ***** To here and replace it with the commented out code below
-              
-        /* This one doesnt have the border
-        // dx, dy, dw, dh = the area of your display that you want to draw to.
-        // sx, sy, sw, sh = the part of the image to draw (measured in pixels) 
         float dx = (imgOffset.x < 0) ? (-imgOffset.x) : 0,    // Draw image at x coord
               dy = (imgOffset.y < 0) ? (-imgOffset.y) : 0,    // Draw image at y coord
               dw = (imgOffset.x < 0) ? max(0, min(inputImage.width + imgOffset.x, width)) : max(0, (width - imgOffset.x)),    // Draw image with width
@@ -67,7 +48,7 @@ void draw() {
               sy1 = (imgOffset.y < 0) ? ((int) -imgOffset.y) : 0,    // Use image region y1
               sx2 = sx1 + (int) dw,    // Use image region x2
               sy2 = sy1 + (int) dh;    // Use image region y2
-        */
+              
         // Update the values to work with the zoom level
         dx /= zoom;
         dy /= zoom;
@@ -79,10 +60,7 @@ void draw() {
         sy2 /= zoom;
         
         if (sx1 < inputImage.width && sy1 < inputImage.height && sx2 > 0 && sy2 > 0) {
-            println("drawing map - remove after pull request");
             image(inputImage, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
-        } else {
-            println("not drawing map - remove after pull request");
         }
         
         if (showGrid) {
