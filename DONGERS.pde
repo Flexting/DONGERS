@@ -28,12 +28,14 @@ void setup() {
 
 void initialise() {
     //selectInput("Select an image", "imageChosen");  
+    // ***** Remove these lines in final version
     inputImage = loadImage(sketchPath() + "/Forest.png");
-    
-    scaleImageToScreen(inputImage);
     createGrid();
+    // ***** Remove these lines in final version
     
     menu = new Menu();
+    menu.addItem(new ToggleGridButton());
+    
     // Add Menu items here
 }
 
@@ -82,6 +84,7 @@ void imageChosen(File file) {
     if(file.exists()) {
         inputImage = loadImage(file.getAbsolutePath()); 
         scaleImageToScreen(inputImage);
+        createGrid();
     }
 }
 
@@ -136,7 +139,7 @@ void keyPressed() {
         // Shift
         case 16: shiftHeld = true; break;
         // G
-        case 71: showGrid = !showGrid; break;
+        case 71: toggleGrid(); break;
     }
 }
 
@@ -170,4 +173,8 @@ void scaleImageToScreen(PImage input) {
     PImage img = input.copy();
     // This function needs to change to set the zoom value not resize the image
     inputImage = img;
+}
+
+void toggleGrid() {
+    showGrid = !showGrid;
 }

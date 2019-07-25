@@ -1,7 +1,8 @@
 
 public class Menu {
     ArrayList<MenuItem> items;
-    float border = 10;
+    float borderHorizontal = 5;
+    float borderVertical = 5;
     float spacing = 10;
     
     public Menu() {
@@ -16,29 +17,32 @@ public class Menu {
     public void updateItemPositions() {
         if (items.isEmpty()) return;
         
-        float w = (items.size()) * MenuItem.diameter + spacing * (items.size() - 1) + border,
-              h = MenuItem.diameter + border,
+        int itemSize = items.size();
+        float w = itemSize * MenuItem.size + spacing * (itemSize - 1) + borderHorizontal * 2,
+              h = MenuItem.size + borderVertical * 2,
               x = width / 2 - w / 2,
               y = 0;
         
-        for (int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < itemSize; i++) {
             MenuItem item = items.get(i);
-            float itemX = x + (MenuItem.diameter + spacing) * (i + 0.5);
+            float itemX = x + borderHorizontal/2.0 + (MenuItem.size + spacing) * (i + 0.5);
             item.setPos(itemX, y + h/2);
         }
     }
     
     public void display() {
         if (items.isEmpty()) return;
-        float w = (items.size()) * MenuItem.diameter + spacing * (items.size() - 1) + border,
-              h = MenuItem.diameter + border,
-              x = width / 2 - w / 2,
+        
+        int itemSize = items.size();
+        float w = itemSize * MenuItem.size + spacing * (itemSize - 1) + borderHorizontal * 2,
+              h = MenuItem.size + borderVertical * 2,
+              x = width/2.0- w/2.0,
               y = 0;
               
         stroke(0);
         strokeWeight(2);
-        fill(80);
-        rect(x, y, w, h, 0, 0, h/2, h/2);
+        fill(255);
+        rect(x, y, w, h, 0, 0, borderHorizontal * 2, borderHorizontal * 2);
         
         for (MenuItem item : items) {
             item.display();    
