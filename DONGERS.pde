@@ -35,6 +35,7 @@ void initialise() {
     
     menu = new Menu();
     menu.addItem(new ToggleGridButton());
+    menu.addItem(new LoadImageButton());
     
     // Add Menu items here
 }
