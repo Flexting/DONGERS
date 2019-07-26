@@ -20,19 +20,19 @@ PVector mouseDownPos, mouseUpPos;    // Track the location of the mouse being pr
 boolean shiftHeld = false;
 boolean showGrid = true;
 
-void setup() {
+public void setup() {
     size(600, 600);
     surface.setResizable(true);
     initialise();
 }
 
-void initialise() {
+private void initialise() {
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
     inputImage = loadImage(sketchPath() + "/Forest.png");
     createGrid();
     // ***** Remove these lines in final version
-    
+
     menu = new Menu();
     menu.addItem(new LoadImageButton());
     menu.addItem(new ToggleGridButton());
@@ -40,10 +40,10 @@ void initialise() {
     menu.addItem(new ResetButton());
 }
 
-void draw() {
+public void draw() {
     PVector imgOffset = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     background(200);
-    
+
     if (inputImage != null) {
         float dx = (imgOffset.x < 0) ? (-imgOffset.x) : 0,    // Draw image at x coord
               dy = (imgOffset.y < 0) ? (-imgOffset.y) : 0,    // Draw image at y coord
@@ -53,7 +53,7 @@ void draw() {
               sy1 = (imgOffset.y < 0) ? ((int) -imgOffset.y) : 0,    // Use image region y1
               sx2 = sx1 + (int) dw,    // Use image region x2
               sy2 = sy1 + (int) dh;    // Use image region y2
-              
+
         // Update the values to work with the zoom level
         dx /= zoom;
         dy /= zoom;
@@ -63,38 +63,30 @@ void draw() {
         sy1 /= zoom;
         sx2 /= zoom;
         sy2 /= zoom;
-        
+
         pushMatrix();
-            if (sx1 < inputImage.width && sy1 < inputImage.height && sx2 > 0 && sy2 > 0) {
-                translate(imgOffset.x, imgOffset.y);
-                scale(zoom);
-                imageMode(CORNER);
-                image(inputImage, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
-            }
-            
-            if (showGrid) {
-                translate(gridTempPos.x, gridTempPos.y);
-                image(grid, 0, 0);
-            }
+        if (sx1 < inputImage.width && sy1 < inputImage.height && sx2 > 0 && sy2 > 0) {
+            translate(imgOffset.x, imgOffset.y);
+            scale(zoom);
+            imageMode(CORNER);
+            image(inputImage, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
+        }
+
+        if (showGrid) {
+            translate(gridTempPos.x, gridTempPos.y);
+            image(grid, 0, 0);
+        }
         popMatrix();
     }
-    
+
     menu.display();
 }
 
-void imageChosen(File file) {
-    if (file != null && file.exists()) {
-        inputImage = loadImage(file.getAbsolutePath()); 
-        scaleImageToScreen();
-        createGrid();
-    }
-}
-
 // Zooming the image / grid
-void mouseWheel(MouseEvent event) {
+public void mouseWheel(MouseEvent event) {
     float count = event.getCount() * -1;
     boolean imageZoom = !shiftHeld;
-    
+
     if (imageZoom) {
         zoom += count / 10.0;
     } else {
@@ -104,21 +96,22 @@ void mouseWheel(MouseEvent event) {
     }
 }
 
-void mousePressed() {
+public void mousePressed() {
     boolean itemPressed = menu.mousePressed();
-    if (!itemPressed) {
-        mouseDownPos = new PVector(mouseX, mouseY);
-    } else {
+    if (itemPressed) {
         mouseDownPos = null;
+    } else {
+        mouseDownPos = new PVector(mouseX, mouseY);
     }
 }
 
-void mouseDragged() {
+public void mouseDragged() {
     if (mouseDownPos == null) return;
+
     boolean dragGrid = shiftHeld;
     PVector mouseCurrentPos = new PVector(mouseX, mouseY),
             tempPos = new PVector(mouseCurrentPos.x - mouseDownPos.x, mouseCurrentPos.y - mouseDownPos.y); 
-    
+
     if (dragGrid) {    
         gridTempPos = tempPos;
     } else {    
@@ -127,9 +120,9 @@ void mouseDragged() {
 }
 
 // Set the imgPos to the imgTempPos and reset the imgTempPos
-void mouseReleased() {
+public void mouseReleased() {
     if (mouseDownPos == null) return;
-    
+
     mouseUpPos = new PVector(mouseX, mouseY);
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     imgTempPos = new PVector(0, 0);
@@ -140,7 +133,7 @@ void mouseReleased() {
     }
 }
 
-void keyPressed() {
+public void keyPressed() {
     switch (keyCode) {
         // Shift
         case 16: shiftHeld = true; break;
@@ -149,32 +142,33 @@ void keyPressed() {
     }
 }
 
-void keyReleased() {
-    println("keyReleased: ", keyCode);
+public void keyReleased() {
+    //println("keyReleased: ", keyCode);
     switch (keyCode) {
         // Shift
         case 16: shiftHeld = false; break;
     }
 }
 
-void createGrid() {
+private void createGrid() {
     if (gridSize == minGridSize) return;
+
     grid = createGraphics(inputImage.width, inputImage.height);
     grid.beginDraw();
     grid.strokeWeight(2);
     grid.stroke(0, 255);
-    for (int i = -1; i < grid.width / gridSize; i++) {
+    for (int i = -1; i < grid.width / gridSize; ++i) {
         float x = gridSize * i + gridPos.x;
         grid.line(x, 0, x, inputImage.height);
     }
-    for (int i = -1; i < grid.height / gridSize; i++) {
+    for (int i = -1; i < grid.height / gridSize; ++i) {
         float y = gridSize * i + gridPos.y;
         grid.line(0, y, inputImage.width, y);
     }
     grid.endDraw();
 }
 
-void scaleImageToScreen() {
+private void scaleImageToScreen() {
     if (inputImage == null) return;
     float ratio = 1;
     if (inputImage.width < inputImage.height) {
@@ -182,21 +176,29 @@ void scaleImageToScreen() {
     } else {
         ratio = height / (float) inputImage.height;
     }
-    
+
     zoom = ratio;
     createGrid();
 }
 
-void toggleGrid() {
+public void imageChosen(File file) {
+    if (file != null && file.exists()) {
+        inputImage = loadImage(file.getAbsolutePath()); 
+        scaleImageToScreen();
+        createGrid();
+    }
+}
+
+public void toggleGrid() {
     showGrid = !showGrid;
 }
 
-void rotateImageRight() {
+public void rotateImageRight() {
     PImage img = new PImage(inputImage.height, inputImage.width);
-    
+
     img.loadPixels();
-    for (int x = 0; x < inputImage.width; x++) {
-        for (int y = 0; y < inputImage.height; y++) {
+    for (int x = 0; x < inputImage.width; ++x) {
+        for (int y = 0; y < inputImage.height; ++y) {
             img.pixels[(img.width - 1 - y) + x * img.width] = inputImage.pixels[x + y * inputImage.width];
         }
     }
@@ -205,7 +207,7 @@ void rotateImageRight() {
     createGrid();
 }
 
-void resetImage() {
+public void resetImage() {
     zoom = 1;
     imgPos = new PVector(0, 0);
     scaleImageToScreen();
