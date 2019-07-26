@@ -131,7 +131,10 @@ public void mouseReleased() {
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     imgTempPos = new PVector(0, 0);
     gridPos = new PVector((gridSize + gridPos.x + gridTempPos.x) % gridSize, (gridSize + gridPos.y + gridTempPos.y) % gridSize);
-    gridTempPos = new PVector(0, 0);    
+    if (gridTempPos.x != 0 && gridTempPos.y != 0) {
+        gridTempPos = new PVector(0, 0);    
+        createGrid();
+    } 
 }
 
 public void keyPressed() {
