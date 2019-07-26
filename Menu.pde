@@ -1,5 +1,7 @@
 
 public class Menu {
+    private MenuRect menuRect;
+    private int lastWidth = 0;
     private ArrayList<MenuItem> items;
     private float borderHorizontal = 5;
     private float borderVertical = 5;
@@ -7,45 +9,54 @@ public class Menu {
 
     public Menu() {
         this.items = new ArrayList<MenuItem>();
+        this.menuRect = new MenuRect();
     }
 
     public void addItem(MenuItem item) {
-        items.add(item);   
-        updateItemPositions();
-    }
-
-    public void updateItemPositions() {
-        if (items.isEmpty()) return;
-
-        int itemSize = items.size();
-        float w = itemSize * MenuItem.size + spacing * (itemSize - 1) + borderHorizontal * 2,
-              h = MenuItem.size + borderVertical * 2,
-              x = width/2.0 - w/2.0,
-              y = 0;
-
-        for (int i = 0; i < itemSize; ++i) {
-            MenuItem item = items.get(i);
-            float itemX = x + borderHorizontal/2.0 + (MenuItem.size + spacing) * (i + 0.5);
-            item.setPos(itemX, y + h/2);
-        }
+        items.add(item);
+        updateMenuPositions();
     }
 
     public void display() {
         if (items.isEmpty()) return;
 
-        int itemSize = items.size();
-        float w = itemSize * MenuItem.size + spacing * (itemSize - 1) + borderHorizontal * 2,
-              h = MenuItem.size + borderVertical * 2,
-              x = width/2.0 - w/2.0,
-              y = 0;
+        // Only re-calculate the positions if the width has changed
+        if (width != lastWidth) {
+            updateMenuPositions();
+        }
 
         stroke(0);
         strokeWeight(2);
         fill(255);
-        rect(x, y, w, h, 0, 0, borderHorizontal * 2, borderHorizontal * 2);
-
+        menuRect.display();
         for (MenuItem item : items) {
             item.display();
+        }
+    }
+    
+    private void updateMenuPositions() {
+        int count = items.size();
+        menuRect.w = count * MenuItem.size + spacing * (count - 1) + borderHorizontal * 2;
+        menuRect.h = MenuItem.size + borderVertical * 2;
+        menuRect.x = (width - menuRect.w)/2.0;
+        menuRect.y = 0;
+
+        updateItemPositions();
+        lastWidth = width;
+    }
+
+    private void updateItemPositions() {
+        if (items.isEmpty()) return;
+
+        int count = items.size();
+        float h = menuRect.h,
+              x = menuRect.x,
+              y = menuRect.y;
+
+        for (int i = 0; i < count; ++i) {
+            MenuItem item = items.get(i);
+            float itemX = x + borderHorizontal/2.0 + (MenuItem.size + spacing) * (i + 0.5);
+            item.setPos(itemX, y + h/2);
         }
     }
 
@@ -56,5 +67,13 @@ public class Menu {
             }
         }
         return false;
+    }
+    
+    // Private inner class
+    private class MenuRect {
+        float x, y, w, h;
+        public void display() {
+            rect(x, y, w, h, 0, 0, borderHorizontal * 2, borderHorizontal * 2);
+        }
     }
 }
