@@ -90,9 +90,13 @@ public void mouseWheel(MouseEvent event) {
     if (imageZoom) {
         zoom += count / 10.0;
     } else {
-        gridSize += 5 * count;
-        gridSize = max(gridSize, minGridSize);
-        createGrid();
+        float size = gridSize + 5 * count;
+        size  = max(size, minGridSize);
+        // Don't recreate the grid for the same size
+        if (size != gridSize) {
+            gridSize = size;
+            createGrid();
+        }
     }
 }
 
@@ -127,10 +131,7 @@ public void mouseReleased() {
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     imgTempPos = new PVector(0, 0);
     gridPos = new PVector((gridSize + gridPos.x + gridTempPos.x) % gridSize, (gridSize + gridPos.y + gridTempPos.y) % gridSize);
-    if (gridTempPos.x != 0 && gridTempPos.y != 0) {
-        gridTempPos = new PVector(0, 0);    
-        createGrid();
-    }
+    gridTempPos = new PVector(0, 0);    
 }
 
 public void keyPressed() {
@@ -157,11 +158,11 @@ private void createGrid() {
     grid.beginDraw();
     grid.strokeWeight(2);
     grid.stroke(0, 255);
-    for (int i = -1; i < grid.width / gridSize; ++i) {
+    for (int i = 0; i <= grid.width / gridSize; ++i) {
         float x = gridSize * i + gridPos.x;
         grid.line(x, 0, x, inputImage.height);
     }
-    for (int i = -1; i < grid.height / gridSize; ++i) {
+    for (int i = 0; i <= grid.height / gridSize; ++i) {
         float y = gridSize * i + gridPos.y;
         grid.line(0, y, inputImage.width, y);
     }
@@ -170,15 +171,13 @@ private void createGrid() {
 
 private void scaleImageToScreen() {
     if (inputImage == null) return;
-    float ratio = 1;
+    float ratio;
     if (inputImage.width < inputImage.height) {
         ratio = width / (float) inputImage.width;
     } else {
         ratio = height / (float) inputImage.height;
     }
-
     zoom = ratio;
-    createGrid();
 }
 
 public void imageChosen(File file) {
