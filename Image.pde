@@ -1,6 +1,7 @@
 
 public class Image {
     PImage img;
+    PGraphics graphic;
     PVector pos;
     
     public Image() {
@@ -15,6 +16,10 @@ public class Image {
     
     public void setImage(PImage img) {
         this.img = img.copy();
+    }
+    
+    public void setGraphic(PGraphics graphic) {
+        this.graphic = graphic;    
     }
     
     public void setPos(float x, float y) {
@@ -34,7 +39,11 @@ public class Image {
         pushMatrix();
         scale(zoom);
         imageMode(CORNER);
-        image(img, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
+        if (img != null) {
+            image(img, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
+        } else if (graphic != null) {
+            image(graphic, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
+        }
         popMatrix();
     }
 }
