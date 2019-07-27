@@ -95,6 +95,7 @@ public void mouseWheel(MouseEvent event) {
         // Don't recreate the grid for the same size
         if (size != gridSize) {
             gridSize = size;
+            updateGridPosition();
             createGrid();
         }
     }
@@ -127,14 +128,11 @@ public void mouseDragged() {
 public void mouseReleased() {
     if (mouseDownPos == null) return;
 
-    mouseUpPos = new PVector(mouseX, mouseY);
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     imgTempPos = new PVector(0, 0);
-    gridPos = new PVector((gridSize + gridPos.x + gridTempPos.x) % gridSize, (gridSize + gridPos.y + gridTempPos.y) % gridSize);
-    if (gridTempPos.x != 0 && gridTempPos.y != 0) {
-        gridTempPos = new PVector(0, 0);    
+    if (updateGridPosition()) {
         createGrid();
-    } 
+    }
 }
 
 public void keyPressed() {
@@ -154,9 +152,17 @@ public void keyReleased() {
     }
 }
 
-private void createGrid() {
-    if (gridSize == minGridSize) return;
+private boolean updateGridPosition() {
+    PVector newPos = new PVector((gridPos.x + gridSize + gridTempPos.x) % gridSize, (gridPos.y + gridSize + gridTempPos.y) % gridSize);
+    if (!gridPos.equals(newPos)) {
+        gridPos = newPos;
+        gridTempPos = new PVector();
+        return true;
+    }
+    return false;
+}
 
+private void createGrid() {
     grid = createGraphics(inputImage.width, inputImage.height);
     grid.beginDraw();
     grid.strokeWeight(2);
