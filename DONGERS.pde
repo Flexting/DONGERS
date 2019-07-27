@@ -8,7 +8,7 @@ float zoom = 1;    // Zoom level of the image
 
 // Don't Modify
 Menu menu;
-PImage inputImage;    // Image displayed on screen
+Image inputImage;    // Image displayed on screen
 PGraphics grid;    // Grid displayed over the top of the image
 
 PVector imgPos = new PVector(0, 0);    // Image x/y position
@@ -27,12 +27,13 @@ public void setup() {
 }
 
 private void initialise() {
+    inputImage = new Image();
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
-    inputImage = loadImage(sketchPath() + "/Forest.png");
+    inputImage.setImage(loadImage(sketchPath() + "/Forest.png"));
     createGrid();
     // ***** Remove these lines in final version
-
+    
     menu = new Menu();
     menu.addItem(new LoadImageButton());
     menu.addItem(new ToggleGridButton());
@@ -45,38 +46,15 @@ public void draw() {
     background(200);
 
     if (inputImage != null) {
-        float dx = (imgOffset.x < 0) ? (-imgOffset.x) : 0,    // Draw image at x coord
-              dy = (imgOffset.y < 0) ? (-imgOffset.y) : 0,    // Draw image at y coord
-              dw = (imgOffset.x < 0) ? max(0, min(inputImage.width + imgOffset.x, width)) : max(0, (width - imgOffset.x)),    // Draw image with width
-              dh = (imgOffset.y < 0) ? max(0, min(inputImage.height + imgOffset.y, height)) : max(0, (height - imgOffset.y));    // Draw image with height
-        int   sx1 = (imgOffset.x < 0) ? ((int) -imgOffset.x) : 0,    // Use image region x1
-              sy1 = (imgOffset.y < 0) ? ((int) -imgOffset.y) : 0,    // Use image region y1
-              sx2 = sx1 + (int) dw,    // Use image region x2
-              sy2 = sy1 + (int) dh;    // Use image region y2
-
-        // Update the values to work with the zoom level
-        dx /= zoom;
-        dy /= zoom;
-        dw /= zoom;
-        dh /= zoom;
-        sx1 /= zoom;
-        sy1 /= zoom;
-        sx2 /= zoom;
-        sy2 /= zoom;
-
-        pushMatrix();
-        if (sx1 < inputImage.width && sy1 < inputImage.height && sx2 > 0 && sy2 > 0) {
-            translate(imgOffset.x, imgOffset.y);
-            scale(zoom);
-            imageMode(CORNER);
-            image(inputImage, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
-        }
-
+        inputImage.setPos(imgOffset.x, imgOffset.y);
+        inputImage.display();
+        
         if (showGrid) {
-            translate(gridTempPos.x, gridTempPos.y);
-            image(grid, 0, 0);
+            pushMatrix();
+            scale(zoom);
+            image(grid, (imgOffset.x + gridTempPos.x) / zoom, (imgOffset.y + gridTempPos.y) / zoom);
+            popMatrix();
         }
-        popMatrix();
     }
 
     menu.display();
@@ -163,17 +141,17 @@ private boolean updateGridPosition() {
 }
 
 private void createGrid() {
-    grid = createGraphics(inputImage.width, inputImage.height);
+    grid = createGraphics(inputImage.img.width, inputImage.img.height);
     grid.beginDraw();
     grid.strokeWeight(2);
     grid.stroke(0, 255);
     for (int i = 0; i <= grid.width / gridSize; ++i) {
         float x = gridSize * i + gridPos.x;
-        grid.line(x, 0, x, inputImage.height);
+        grid.line(x, 0, x, inputImage.img.height);
     }
     for (int i = 0; i <= grid.height / gridSize; ++i) {
         float y = gridSize * i + gridPos.y;
-        grid.line(0, y, inputImage.width, y);
+        grid.line(0, y, inputImage.img.width, y);
     }
     grid.endDraw();
 }
@@ -181,17 +159,17 @@ private void createGrid() {
 private void scaleImageToScreen() {
     if (inputImage == null) return;
     float ratio;
-    if (inputImage.width < inputImage.height) {
-        ratio = width / (float) inputImage.width;
+    if (inputImage.img.width < inputImage.img.height) {
+        ratio = width / (float) inputImage.img.width;
     } else {
-        ratio = height / (float) inputImage.height;
+        ratio = height / (float) inputImage.img.height;
     }
     zoom = ratio;
 }
 
 public void imageChosen(File file) {
     if (file != null && file.exists()) {
-        inputImage = loadImage(file.getAbsolutePath()); 
+        inputImage.setImage(loadImage(file.getAbsolutePath())); 
         scaleImageToScreen();
         createGrid();
     }
@@ -202,16 +180,16 @@ public void toggleGrid() {
 }
 
 public void rotateImageRight() {
-    PImage img = new PImage(inputImage.height, inputImage.width);
+    PImage img = new PImage(inputImage.img.height, inputImage.img.width);
 
     img.loadPixels();
-    for (int x = 0; x < inputImage.width; ++x) {
-        for (int y = 0; y < inputImage.height; ++y) {
-            img.pixels[(img.width - 1 - y) + x * img.width] = inputImage.pixels[x + y * inputImage.width];
+    for (int x = 0; x < inputImage.img.width; ++x) {
+        for (int y = 0; y < inputImage.img.height; ++y) {
+            img.pixels[(img.width - 1 - y) + x * img.width] = inputImage.img.pixels[x + y * inputImage.img.width];
         }
     }
     img.updatePixels();
-    inputImage = img.copy();
+    inputImage.setImage(img.copy());
     createGrid();
 }
 
