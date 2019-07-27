@@ -9,7 +9,8 @@ float zoom = 1;    // Zoom level of the image
 // Don't Modify
 Menu menu;
 Image inputImage;    // Image displayed on screen
-PGraphics grid;    // Grid displayed over the top of the image
+Image grid;    // Grid displayed over the top of the image
+//PGraphics grid;    // Grid displayed over the top of the image
 
 PVector imgPos = new PVector(0, 0);    // Image x/y position
 PVector imgTempPos = new PVector(0, 0);    // Image temp x/y position used for drawing
@@ -28,6 +29,7 @@ public void setup() {
 
 private void initialise() {
     inputImage = new Image();
+    grid = new Image();
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
     inputImage.setImage(loadImage(sketchPath() + "/Forest.png"));
@@ -50,10 +52,9 @@ public void draw() {
         inputImage.display();
         
         if (showGrid) {
-            pushMatrix();
-            scale(zoom);
-            image(grid, (imgOffset.x + gridTempPos.x) / zoom, (imgOffset.y + gridTempPos.y) / zoom);
-            popMatrix();
+            //image(grid, (imgOffset.x + gridTempPos.x) / zoom, (imgOffset.y + gridTempPos.y) / zoom);
+            grid.setPos((imgOffset.x + gridTempPos.x), (imgOffset.y + gridTempPos.y));
+            grid.display();
         }
     }
 
@@ -135,7 +136,7 @@ public void keyReleased() {
 private void createGrid() {
     if (gridSize == minGridSize) return;
 
-    grid = createGraphics(inputImage.img.width, inputImage.img.height);
+    PGraphics grid = createGraphics(inputImage.img.width, inputImage.img.height);
     grid.beginDraw();
     grid.strokeWeight(2);
     grid.stroke(0, 255);
@@ -148,6 +149,7 @@ private void createGrid() {
         grid.line(0, y, inputImage.img.width, y);
     }
     grid.endDraw();
+    this.grid.setGraphic(grid);
 }
 
 private void scaleImageToScreen() {
