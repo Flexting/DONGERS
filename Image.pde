@@ -25,6 +25,14 @@ public class Image {
     public void setPos(float x, float y) {
         this.pos = new PVector(x, y);    
     }
+
+    public void setPos(PVector pos) {
+        this.pos = pos;
+    }
+
+    public PVector getPos() {
+        return this.pos;
+    }
     
     public void display() {
         float dx = 0,    // Draw image at x coord

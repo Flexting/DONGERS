@@ -2,25 +2,18 @@
 import java.io.File;
 
 // Can Modify
-float gridSize = 60;    // Size of the overlay grid
-float minGridSize = 10;
 float zoom = 1;    // Zoom level of the image
 
 // Don't Modify
 Menu menu;
 Image inputImage;    // Image displayed on screen
-Image grid;    // Grid displayed over the top of the image
-//PGraphics grid;    // Grid displayed over the top of the image
+Grid grid;
 
 PVector imgPos = new PVector(0, 0);    // Image x/y position
 PVector imgTempPos = new PVector(0, 0);    // Image temp x/y position used for drawing
-PVector gridPos = new PVector(0, 0);    // Grid x/y position
-PVector gridTempPos = new PVector(0, 0);    // Grid temp x/y position used for dragging
 
 PVector mouseDownPos, mouseUpPos;    // Track the location of the mouse being pressed and released
 boolean shiftHeld = false;
-boolean showGrid = true;
-float gridWeight = 2;
 
 public void setup() {
     size(600, 600);
@@ -31,12 +24,11 @@ public void setup() {
 
 private void initialise() {
     inputImage = new Image();
-    grid = new Image();
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
     inputImage.setImage(loadImage(sketchPath() + "/Forest.png"));
-    createGrid();
     // ***** Remove these lines in final version
+    grid = new Grid();
     
     menu = new Menu();
     menu.addItem(new LoadImageButton());
@@ -53,11 +45,7 @@ public void draw() {
         inputImage.setPos(imgOffset.x, imgOffset.y);
         inputImage.display();
         
-        if (showGrid) {
-            //image(grid, (imgOffset.x + gridTempPos.x) / zoom, (imgOffset.y + gridTempPos.y) / zoom);
-            grid.setPos((imgOffset.x + gridTempPos.x), (imgOffset.y + gridTempPos.y));
-            grid.display();
-        }
+        grid.display(imgOffset.x, imgOffset.y);
     }
 
     menu.display();
@@ -72,14 +60,8 @@ public void mouseWheel(MouseEvent event) {
     if (imageZoom) {
         zoom += count / 10.0;
     } else {
-        float size = gridSize + 5 * count;
-        size  = max(size, minGridSize);
-        // Don't recreate the grid for the same size
-        if (size != gridSize) {
-            gridSize = size;
-            updateGridPosition();
-            createGrid();
-        }
+        float size = grid.getSize() + 5 * count;
+        grid.setSize(size);
     }
 }
 
@@ -100,7 +82,7 @@ public void mouseDragged() {
             tempPos = new PVector(mouseCurrentPos.x - mouseDownPos.x, mouseCurrentPos.y - mouseDownPos.y); 
 
     if (dragGrid) {    
-        gridTempPos = tempPos;
+        grid.setTempPos(tempPos);
     } else {    
         imgTempPos = tempPos;
     }
@@ -111,9 +93,10 @@ public void mouseReleased() {
     if (mouseDownPos == null) return;
 
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
-    imgTempPos = new PVector(0, 0);
-    if (updateGridPosition()) {
-        createGrid();
+    imgTempPos = new PVector();
+
+    if (grid.updateGridPosition()) {
+        grid.createGrid();
     }
 }
 
@@ -126,10 +109,7 @@ public void keyPressed() {
     }
     if (keyCode >= 49 && keyCode <= 57) {
         float weight = (keyCode - 48) / 2.0 + 0.5; 
-        if (weight != gridWeight) {
-            gridWeight = weight;
-            createGrid();
-        }
+        grid.setWeight(weight);
     }
 }
 
@@ -139,33 +119,6 @@ public void keyReleased() {
         // Shift
         case 16: shiftHeld = false; break;
     }
-}
-
-private boolean updateGridPosition() {
-    PVector newPos = new PVector((gridPos.x + gridTempPos.x / zoom) % gridSize, (gridPos.y + gridTempPos.y / zoom) % gridSize);
-    if (!gridPos.equals(newPos)) {
-        gridPos = newPos;
-        gridTempPos = new PVector();
-        return true;
-    }
-    return false;
-}
-
-private void createGrid() {
-    PGraphics grid = createGraphics(inputImage.img.width, inputImage.img.height);
-    grid.beginDraw();
-    grid.strokeWeight(gridWeight);
-    grid.stroke(0, 255);
-    for (int i = 0; i <= grid.width / gridSize; ++i) {
-        float x = gridSize * i + gridPos.x;
-        grid.line(x, 0, x, inputImage.img.height);
-    }
-    for (int i = 0; i <= grid.height / gridSize; ++i) {
-        float y = gridSize * i + gridPos.y;
-        grid.line(0, y, inputImage.img.width, y);
-    }
-    grid.endDraw();
-    this.grid.setGraphic(grid);
 }
 
 private void scaleImageToScreen() {
@@ -183,12 +136,12 @@ public void imageChosen(File file) {
     if (file != null && file.exists()) {
         inputImage.setImage(loadImage(file.getAbsolutePath())); 
         scaleImageToScreen();
-        createGrid();
+        grid.createGrid();
     }
 }
 
 public void toggleGrid() {
-    showGrid = !showGrid;
+    grid.toggle();
 }
 
 public void rotateImageRight() {
@@ -202,7 +155,7 @@ public void rotateImageRight() {
     }
     img.updatePixels();
     inputImage.setImage(img.copy());
-    createGrid();
+    grid.createGrid();
 }
 
 public void resetImage() {
