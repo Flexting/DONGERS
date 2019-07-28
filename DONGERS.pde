@@ -126,7 +126,10 @@ public void keyPressed() {
     }
     if (keyCode >= 49 && keyCode <= 57) {
         float weight = (keyCode - 48) / 2.0 + 0.5; 
-        gridWeight = weight;
+        if (weight != gridWeight) {
+            gridWeight = weight;
+            createGrid();
+        }
     }
 }
 
