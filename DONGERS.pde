@@ -23,6 +23,7 @@ boolean showGrid = true;
 
 public void setup() {
     size(600, 600);
+    noSmooth();
     surface.setResizable(true);
     initialise();
 }
@@ -59,6 +60,7 @@ public void draw() {
     }
 
     menu.display();
+    //text("FPS: " + (int)frameRate, 16, 16);
 }
 
 // Zooming the image / grid
