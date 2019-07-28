@@ -20,6 +20,7 @@ PVector gridTempPos = new PVector(0, 0);    // Grid temp x/y position used for d
 PVector mouseDownPos, mouseUpPos;    // Track the location of the mouse being pressed and released
 boolean shiftHeld = false;
 boolean showGrid = true;
+float gridWeight = 2;
 
 public void setup() {
     size(600, 600);
@@ -123,6 +124,10 @@ public void keyPressed() {
         // G
         case 71: toggleGrid(); break;
     }
+    if (keyCode >= 49 && keyCode <= 57) {
+        float weight = (keyCode - 48) / 2.0 + 0.5; 
+        gridWeight = weight;
+    }
 }
 
 public void keyReleased() {
@@ -146,7 +151,7 @@ private boolean updateGridPosition() {
 private void createGrid() {
     PGraphics grid = createGraphics(inputImage.img.width, inputImage.img.height);
     grid.beginDraw();
-    grid.strokeWeight(2);
+    grid.strokeWeight(gridWeight);
     grid.stroke(0, 255);
     for (int i = 0; i <= grid.width / gridSize; ++i) {
         float x = gridSize * i + gridPos.x;
