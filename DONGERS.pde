@@ -134,7 +134,7 @@ public void keyReleased() {
 }
 
 private boolean updateGridPosition() {
-    PVector newPos = new PVector((gridPos.x + gridSize + gridTempPos.x) % gridSize, (gridPos.y + gridSize + gridTempPos.y) % gridSize);
+    PVector newPos = new PVector((gridPos.x + gridTempPos.x / zoom) % gridSize, (gridPos.y + gridTempPos.y / zoom) % gridSize);
     if (!gridPos.equals(newPos)) {
         gridPos = newPos;
         gridTempPos = new PVector();
