@@ -95,9 +95,7 @@ public void mouseReleased() {
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     imgTempPos = new PVector();
 
-    if (grid.updateGridPosition()) {
-        grid.createGrid();
-    }
+    grid.updateGridPosition(true);
 }
 
 public void keyPressed() {

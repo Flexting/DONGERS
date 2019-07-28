@@ -52,19 +52,24 @@ public class Grid {
 		}
 
         this.gridSize = size;
-        updateGridPosition();
+        updateGridPosition(false);
         createGrid();
 		return true;
 	}
 
-	public boolean updateGridPosition() {
+	public boolean updateGridPosition(boolean redraw) {
 	    PVector newPos = new PVector((gridPos.x + gridTempPos.x / zoom) % gridSize, (gridPos.y + gridTempPos.y / zoom) % gridSize);
-	    if (!gridPos.equals(newPos)) {
-	        gridPos = newPos;
-	        gridTempPos = new PVector();
-	        return true;
+	    // Don't recreate the grid for the same size
+	    if (gridPos.equals(newPos)) {
+	    	return false;
 	    }
-	    return false;
+
+        gridPos = newPos;
+        gridTempPos = new PVector();
+        if (redraw) {
+	        createGrid();
+    	}
+        return true;
 	}
 
 	public void createGrid() {
