@@ -1,7 +1,6 @@
 
 public class Image {
     PImage img;
-    PGraphics graphic;
     PVector pos;
     
     public Image() {
@@ -18,10 +17,6 @@ public class Image {
         this.img = img.copy();
     }
     
-    public void setGraphic(PGraphics graphic) {
-        this.graphic = graphic;    
-    }
-    
     public void setPos(float x, float y) {
         this.pos = new PVector(x, y);    
     }
@@ -35,6 +30,8 @@ public class Image {
     }
     
     public void display() {
+        if (img == null) return;
+
         float dx = 0,    // Draw image at x coord
               dy = 0,    // Draw image at y coord
               dw = width / zoom,    // Draw image with width
@@ -47,11 +44,7 @@ public class Image {
         pushMatrix();
         scale(zoom);
         imageMode(CORNER);
-        if (img != null) {
-            image(img, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
-        } else if (graphic != null) {
-            image(graphic, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
-        }
+        image(img, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
         popMatrix();
     }
 }

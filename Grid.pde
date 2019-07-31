@@ -86,7 +86,7 @@ public class Grid {
             grid.line(0, y, inputImage.img.width, y);
         }
         grid.endDraw();
-        this.grid.setGraphic(grid);
+        this.grid.setImage(grid);
     }
 
     public boolean isVisible() {
