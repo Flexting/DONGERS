@@ -121,13 +121,10 @@ public void keyReleased() {
 
 private void scaleImageToScreen() {
     if (inputImage == null) return;
-    float ratio;
-    if (inputImage.img.width < inputImage.img.height) {
-        ratio = width / (float) inputImage.img.width;
-    } else {
-        ratio = height / (float) inputImage.img.height;
-    }
-    zoom = ratio;
+
+    float xRatio = width / (float) inputImage.img.width;
+    float yRatio = height / (float) inputImage.img.height;
+    zoom = (xRatio < yRatio) ? xRatio : yRatio;
 }
 
 public void imageChosen(File file) {
