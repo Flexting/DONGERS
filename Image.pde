@@ -32,18 +32,21 @@ public class Image {
     public void display() {
         if (img == null) return;
 
-        float dx = 0,    // Draw image at x coord
-              dy = 0,    // Draw image at y coord
-              dw = width / zoom,    // Draw image with width
+        PVector center = new PVector(width/2, height/2);
+        PVector imgCenter = new PVector(img.width/2, img.height/2);
+
+        float dx = center.x / zoom,    // Draw image at x coord
+              dy = center.y / zoom,    // Draw image at y coord
+              dw = width / zoom,     // Draw image with width
               dh = height / zoom;    // Draw image with height
-        int   sx1 = (int) (-pos.x / zoom),    // Use image region x1
-              sy1 = (int) (-pos.y / zoom),    // Use image region y1
+        int   sx1 = (int) (imgCenter.x - dx - pos.x / zoom),    // Use image region x1
+              sy1 = (int) (imgCenter.y - dy - pos.y / zoom),    // Use image region y1
               sx2 = sx1 + (int) dw,    // Use image region x2
               sy2 = sy1 + (int) dh;    // Use image region y2
               
         pushMatrix();
         scale(zoom);
-        imageMode(CORNER);
+        imageMode(CENTER);
         image(img, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
         popMatrix();
     }
