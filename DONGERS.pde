@@ -101,13 +101,19 @@ public void mouseReleased() {
 public void keyPressed() {
     switch (keyCode) {
         // Shift
-        case 16: shiftHeld = true; break;
+        case SHIFT: shiftHeld = true; break;
         // G
         case 71: toggleGrid(); break;
     }
+    // 1-9
     if (keyCode >= 49 && keyCode <= 57) {
         float weight = (keyCode - 48) / 2.0 + 0.5; 
         grid.setWeight(weight);
+    }
+    // Direction arrow
+    if (keyCode >= 37 && keyCode <= 40) {
+        int amount = shiftHeld ? 50 : 10;
+        moveImage(keyCode, amount);
     }
 }
 
@@ -115,7 +121,17 @@ public void keyReleased() {
     //println("keyReleased: ", keyCode);
     switch (keyCode) {
         // Shift
-        case 16: shiftHeld = false; break;
+        case SHIFT: shiftHeld = false; break;
+    }
+}
+
+public void moveImage(int direction, int amount) {
+    switch (direction) {
+        case UP:    imgPos.y -= amount; break;
+        case DOWN:  imgPos.y += amount; break;
+        case LEFT:  imgPos.x -= amount; break;
+        case RIGHT: imgPos.x += amount; break;
+        //default: println("Invalid direction " + direction); break;
     }
 }
 
