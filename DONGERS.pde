@@ -58,7 +58,7 @@ public void mouseWheel(MouseEvent event) {
     boolean imageZoom = !shiftHeld;
 
     if (imageZoom) {
-        zoom += count / 10.0;
+        zoom(count / 10.0);
     } else {
         float size = grid.getSize() + 5 * count;
         grid.setSize(size);
@@ -123,6 +123,26 @@ public void keyReleased() {
         // Shift
         case SHIFT: shiftHeld = false; break;
     }
+}
+
+public void zoom(float amount) {
+    float newZoom = zoom + amount;
+
+    // Where the cursor is in relation to the centre
+    PVector pos = new PVector(mouseX - width/2, mouseY - height/2);
+
+    // Zoom ratio
+    float scale = newZoom / zoom;
+
+    // Difference between zoomed position and the zoomed scaled position
+    float mult = 1 - scale;
+    PVector deltaPos = new PVector(pos.x * mult, pos.y * mult);
+
+    // Apply the scale and shift by the delta
+    imgPos.x = imgPos.x * scale + deltaPos.x;
+    imgPos.y = imgPos.y * scale + deltaPos.y;
+
+    zoom = newZoom;
 }
 
 public void moveImage(int direction, int amount) {
