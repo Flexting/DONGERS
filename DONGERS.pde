@@ -15,6 +15,10 @@ PVector imgTempPos = new PVector(0, 0);    // Image temp x/y position used for d
 PVector mouseDownPos, mouseUpPos;    // Track the location of the mouse being pressed and released
 boolean shiftHeld = false;
 
+// Constants
+private static final float MIN_ZOOM = 0.05;
+private static final float MAX_ZOOM = 5.0;
+
 public void setup() {
     size(600, 600);
     noSmooth();
@@ -128,12 +132,13 @@ public void keyReleased() {
 public void zoom(float amount) {
     float newZoom = zoom + amount;
 
+    // Constrain to max/min zooms
+    if (newZoom < MIN_ZOOM || newZoom > MAX_ZOOM) return;
+
     // Where the cursor is in relation to the centre
     PVector pos = new PVector(mouseX - width/2, mouseY - height/2);
-
     // Zoom ratio
     float scale = newZoom / zoom;
-
     // Difference between zoomed position and the zoomed scaled position
     float mult = 1 - scale;
     PVector deltaPos = new PVector(pos.x * mult, pos.y * mult);
