@@ -11,6 +11,7 @@ public class Menu extends PopupWindow {
     public void addItem(MenuButton item) {
         add(item);
         updateMenuPositions();
+        updateItemPositions();
     }
 
     protected void display_i() {
@@ -37,7 +38,7 @@ public class Menu extends PopupWindow {
         menuRect.x = (width - menuRect.w)/2.0;
         menuRect.y = 0;
 
-        updateItemPositions();
+        updateOffsets();
         lastWidth = width;
     }
 
@@ -46,7 +47,6 @@ public class Menu extends PopupWindow {
             MenuButton item = (MenuButton) elements.get(i);
             float itemX = borderHorizontal/2.0 + (MenuButton.size + spacing) * (i + 0.5);
             item.setPos(itemX, menuRect.h/2);
-            item.setOffset(menuRect.x, menuRect.y);
         }
     }
     

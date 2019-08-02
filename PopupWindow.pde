@@ -35,19 +35,21 @@ public abstract class PopupWindow {
                 }
             }
             if (menuRectPressed()) {
+                selectWindow();
                 return true;
             }
         }
         return false;
     }
 
-    public final void mouseDragged() {
+    public void mouseDragged() {
         if (selectedElement != null) {
             selectedElement.onDragged();
         }
     }
 
     public final void mouseReleased() {
+        deselectWindow();
         selectedElement = null;
     }
 
@@ -76,6 +78,9 @@ public abstract class PopupWindow {
         visible = false;
     }
 
+    protected void selectWindow() {}
+    protected void deselectWindow() {}
+
     protected final void addAll(MenuElement... elements) {
         for (MenuElement element : elements) {
             add(element);
@@ -85,6 +90,12 @@ public abstract class PopupWindow {
     protected final void add(MenuElement element) {
         elements.add(element);
         element.setWindow(this);
+    }
+
+    protected final void updateOffsets() {
+        for (MenuElement element : elements) {
+            element.setOffset(menuRect.x, menuRect.y);
+        }
     }
 
     private boolean menuRectPressed() {
@@ -98,6 +109,35 @@ public abstract class PopupWindow {
         public void display() {
             float curve = borderHorizontal * 2;
             rect(x, y, w, h, curve, curve, curve, curve);
+        }
+    }
+
+}
+
+public abstract class DraggableWindow extends PopupWindow {
+
+    private boolean selectedWindow = false;
+    private PVector startPos = new PVector();
+
+    @Override
+    protected void selectWindow() {
+        selectedWindow = true;
+        startPos.set(menuRect.x, menuRect.y);
+    }
+
+    @Override
+    protected void deselectWindow() {
+        selectedWindow = false;
+    }
+
+    @Override
+    public void mouseDragged() {
+        if (selectedWindow) {
+            menuRect.x = startPos.x + mouseX - mouseDownPos.x;
+            menuRect.y = startPos.y + mouseY - mouseDownPos.y;
+            updateOffsets();
+        } else {
+            super.mouseDragged();
         }
     }
 

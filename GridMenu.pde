@@ -1,7 +1,7 @@
 
 import java.util.Collections;
 
-public class GridMenu extends PopupWindow {
+public class GridMenu extends DraggableWindow {
 
     private Grid grid;
 
@@ -52,6 +52,7 @@ public class GridMenu extends PopupWindow {
 
     @Override
     public void show_i() {
+        centerScreen();
         startHue = grid.getHue();
         startBright = grid.getBrightness();
         startOpacity = grid.getOpacity();
@@ -82,12 +83,6 @@ public class GridMenu extends PopupWindow {
         grid.setBrightness(brightSlider.getValue());
         grid.setOpacity(opacitySlider.getValue());
         grid.setWeight(weightSlider.getValue());
-    }
-
-    public void updateOffsets() {
-        for (MenuElement element : elements) {
-            element.setOffset(menuRect.x, menuRect.y);
-        }
     }
 
     private void createMenuPositions() {
@@ -129,9 +124,12 @@ public class GridMenu extends PopupWindow {
 
         menuRect.w = w + borderHorizontal * 2;
         menuRect.h = y;
+        centerScreen();
+    }
+
+    private void centerScreen() {
         menuRect.x = (width - menuRect.w) / 2.0;
         menuRect.y = (height - menuRect.h) / 2.0;
-
         updateOffsets();
     }
 
