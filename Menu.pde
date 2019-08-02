@@ -1,24 +1,20 @@
 
-public class Menu {
-    private MenuRect menuRect;
-    private int lastWidth = 0;
-    private ArrayList<MenuItem> items;
-    private float borderHorizontal = 5;
-    private float borderVertical = 5;
-    private float spacing = 10;
+public class Menu extends PopupWindow {
+
+    private int lastWidth;
 
     public Menu() {
-        this.items = new ArrayList<MenuItem>();
-        this.menuRect = new MenuRect();
+        this.lastWidth = 0;
+        show();
     }
 
-    public void addItem(MenuItem item) {
-        items.add(item);
+    public void addItem(MenuButton item) {
+        add(item);
         updateMenuPositions();
     }
 
-    public void display() {
-        if (items.isEmpty()) return;
+    protected void display_i() {
+        if (elements.isEmpty()) return;
 
         // Only re-calculate the positions if the width has changed
         if (width != lastWidth) {
@@ -29,15 +25,15 @@ public class Menu {
         strokeWeight(2);
         fill(255);
         menuRect.display();
-        for (MenuItem item : items) {
-            item.display();
+        for (MenuElement element : elements) {
+            element.display();
         }
     }
     
     private void updateMenuPositions() {
-        int count = items.size();
-        menuRect.w = count * MenuItem.size + spacing * (count - 1) + borderHorizontal * 2;
-        menuRect.h = MenuItem.size + borderVertical * 2;
+        int count = elements.size();
+        menuRect.w = count * MenuButton.size + spacing * (count - 1) + borderHorizontal * 2;
+        menuRect.h = MenuButton.size + borderVertical * 2;
         menuRect.x = (width - menuRect.w)/2.0;
         menuRect.y = 0;
 
@@ -46,34 +42,12 @@ public class Menu {
     }
 
     private void updateItemPositions() {
-        if (items.isEmpty()) return;
-
-        int count = items.size();
-        float h = menuRect.h,
-              x = menuRect.x,
-              y = menuRect.y;
-
-        for (int i = 0; i < count; ++i) {
-            MenuItem item = items.get(i);
-            float itemX = x + borderHorizontal/2.0 + (MenuItem.size + spacing) * (i + 0.5);
-            item.setPos(itemX, y + h/2);
+        for (int i = 0; i < elements.size(); ++i) {
+            MenuButton item = (MenuButton) elements.get(i);
+            float itemX = borderHorizontal/2.0 + (MenuButton.size + spacing) * (i + 0.5);
+            item.setPos(itemX, menuRect.h/2);
+            item.setOffset(menuRect.x, menuRect.y);
         }
-    }
-
-    public boolean mousePressed() {
-        for (MenuItem item : items) {
-            if (item.mousePressed()) {
-                return true;
-            }
-        }
-        return false;
     }
     
-    // Private inner class
-    private class MenuRect {
-        float x, y, w, h;
-        public void display() {
-            rect(x, y, w, h, 0, 0, borderHorizontal * 2, borderHorizontal * 2);
-        }
-    }
 }
