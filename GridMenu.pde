@@ -48,12 +48,12 @@ public class GridMenu extends PopupWindow {
             cancelButton, revertButton, applyButton);
 
         createMenuPositions();
-        show();
     }
 
     @Override
     public void show_i() {
         startHue = grid.getHue();
+        startBright = grid.getBrightness();
         startOpacity = grid.getOpacity();
         startWeight = grid.getWeight();
     }

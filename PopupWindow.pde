@@ -62,9 +62,11 @@ public abstract class PopupWindow {
     protected void collectValues() {}
 
     public final void show() {
-        visible = true;
-        show_i();
-        updateValues_i();
+        if (!visible) {
+            visible = true;
+            show_i();
+            updateValues_i();
+        }
     }
 
     // Overridable

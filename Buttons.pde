@@ -28,7 +28,7 @@ public class RotateImageRightButton extends MenuButton {
 
     @Override
     public void onPressed() {
-        rotateImageRight();  
+        rotateImageRight();
     }
 }
 
@@ -39,6 +39,17 @@ public class ResetButton extends MenuButton {
 
     @Override
     public void onPressed() {
-        resetImage();  
+        resetImage();
+    }
+}
+
+public class GridMenuButton extends MenuButton {
+    public GridMenuButton() {
+        super("gear-icon.png");
+    }
+
+    @Override
+    public void onPressed() {
+        showGridMenu();
     }
 }

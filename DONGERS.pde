@@ -44,6 +44,7 @@ private void initialise() {
     Menu menu = new Menu();
     menu.addItem(new LoadImageButton());
     menu.addItem(new ToggleGridButton());
+    menu.addItem(new GridMenuButton());
     menu.addItem(new RotateImageRightButton());
     menu.addItem(new ResetButton());
     this.menu = menu;
@@ -207,6 +208,10 @@ public void imageChosen(File file) {
 
 public void toggleGrid() {
     grid.toggle();
+}
+
+public void showGridMenu() {
+    gridMenu.show();
 }
 
 public void rotateImageRight() {
