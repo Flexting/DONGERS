@@ -100,6 +100,7 @@ public abstract class MenuSlider extends MenuElement {
 
     protected Number min, max, step, value;
     private PVector dimensions;
+    private float barStart, barEnd, barWidth;
 
     public MenuSlider(Number min, Number max, Number step) {
         this.min = min;
@@ -113,20 +114,21 @@ public abstract class MenuSlider extends MenuElement {
         stroke(0);
         float y = offset.y + pos.y + dimensions.y / 2;
 
+        PVector realPos = getRealPos();
+        float x1 = realPos.x + barStart;
+        float x2 = realPos.x + barEnd;
+
         // Debug outline
-        //strokeWeight(1); rect(x1, offset.y + pos.y, dimensions.x, dimensions.y);
+        //strokeWeight(1); fill(255); rect(realPos.x, realPos.y, dimensions.x, dimensions.y);
 
         // Scrollbar
-        float x1 = offset.x + pos.x;
-        float x2 = x1 + dimensions.x;
-
         strokeWeight(2);
         line(x1, y, x2, y);
 
         // Value pin
         Float adjusted = getAdjustedValue();
         if (adjusted != null) {
-            float valueX = x1 + adjusted * dimensions.x;
+            float valueX = x1 + adjusted * barWidth;
 
             fill(255);
             strokeWeight(4);
@@ -143,13 +145,14 @@ public abstract class MenuSlider extends MenuElement {
 
     @Override
     public void onDragged() {
-        float x1 = offset.x + pos.x;
-        float x2 = x1 + dimensions.x;
+        PVector realPos = getRealPos();
+        float x1 = realPos.x + barStart;
+        float x2 = realPos.x + barEnd;
 
         float min = this.min.floatValue();
         float max = this.max.floatValue();
 
-        float selection = (mouseX - x1) / dimensions.x;
+        float selection = (mouseX - x1) / barWidth;
         selection = selection * (max - min) + min;
         selection = (selection < min) ? min : (selection > max) ? max : selection;
 
@@ -194,6 +197,9 @@ public abstract class MenuSlider extends MenuElement {
 
     public void setDimensions(float x, float y) {
         dimensions.set(x, y);
+        barStart = y/2;
+        barEnd = x - y/2;
+        barWidth = barEnd - barStart;
     }
 }
 

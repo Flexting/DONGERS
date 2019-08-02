@@ -24,7 +24,7 @@ public class GridMenu extends PopupWindow {
     private MenuButton applyButton;
 
     private float sliderHeight = 30;
-    private float labelWidth = 45;
+    private float labelWidth = 40;
 
     public GridMenu(Grid grid) {
         this.grid = grid;
