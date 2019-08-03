@@ -84,6 +84,7 @@ public abstract class PopupWindow {
     /* Showing and hiding of the window */
 
     public final void show() {
+        resetWindowPos();
         if (!visible) {
             visible = true;
             onShow();
@@ -120,6 +121,17 @@ public abstract class PopupWindow {
             element.setOffset(menuRect.x, menuRect.y);
         }
     }
+
+    public final void resetWindowPos() {
+        PVector pos = getPreferredWindowPos();
+        if (pos.x != menuRect.x || pos.y != menuRect.y) {
+            menuRect.x = pos.x;
+            menuRect.y = pos.y;
+            updateOffsets();
+        }
+    }
+
+    protected abstract PVector getPreferredWindowPos();
 
     // Protected inner class
     protected class MenuRect {

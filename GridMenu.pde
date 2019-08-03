@@ -52,7 +52,6 @@ public class GridMenu extends DraggableWindow {
 
     @Override
     public void onShow() {
-        centerScreen();
         startHue = grid.getHue();
         startBright = grid.getBrightness();
         startOpacity = grid.getOpacity();
@@ -125,13 +124,13 @@ public class GridMenu extends DraggableWindow {
 
         menuRect.w = w + borderHorizontal * 2;
         menuRect.h = y;
-        centerScreen();
+        resetWindowPos();
     }
 
-    private void centerScreen() {
-        menuRect.x = (width - menuRect.w) / 2.0;
-        menuRect.y = (height - menuRect.h) / 2.0;
-        updateOffsets();
+    protected PVector getPreferredWindowPos() {
+        float x = (width - menuRect.w) / 2.0;
+        float y = (height - menuRect.h) / 2.0;
+        return new PVector(x, y);
     }
 
     public void cancel() {

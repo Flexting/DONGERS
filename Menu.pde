@@ -28,15 +28,18 @@ public class Menu extends PopupWindow {
             element.display();
         }
     }
+
+    protected PVector getPreferredWindowPos() {
+        float x = (width - menuRect.w) / 2.0;
+        float y = 0;
+        return new PVector(x, y);
+    }
     
     private void updateMenuPositions() {
         int count = elements.size();
         menuRect.w = count * MenuButton.size + spacing * (count - 1) + borderHorizontal * 2;
         menuRect.h = MenuButton.size + borderVertical * 2;
-        menuRect.x = (width - menuRect.w)/2.0;
-        menuRect.y = 0;
-
-        updateOffsets();
+        resetWindowPos();
         lastWidth = width;
     }
 
