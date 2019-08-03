@@ -15,16 +15,20 @@ public abstract class PopupWindow {
 
     public PopupWindow() {
         this.menuRect = new MenuRect();
-        this.elements = new ArrayList();
+        this.elements = new ArrayList<MenuElement>();
     }
 
+    /* Display functions */
+
     public final void display() {
-        if (visible) {
-            display_i();
+        if (visible && !elements.isEmpty()) {
+            onDisplay();
         }
     }
 
-    protected abstract void display_i();
+    protected abstract void onDisplay();
+
+    /* Mouse functions */
 
     public final boolean mousePressed() {
         if (visible) {
@@ -53,36 +57,55 @@ public abstract class PopupWindow {
         selectedElement = null;
     }
 
-    public final void updateValues() {
-        if (visible) {
-            updateValues_i();
-        }
-    }
-
-    // Overridable
-    protected void updateValues_i() {}
-    protected void collectValues() {}
-
-    public final void show() {
-        if (!visible) {
-            visible = true;
-            show_i();
-            updateValues_i();
-        }
-    }
-
-    // Overridable
-    protected void show_i() {}
-
-    public final void hide() {
-        visible = false;
+    private boolean menuRectPressed() {
+        return (menuRect.x < mouseX && mouseX < menuRect.x + menuRect.w
+            &&  menuRect.y < mouseY && mouseY < menuRect.y + menuRect.h);
     }
 
     protected void selectWindow() {}
     protected void deselectWindow() {}
 
-    protected final void addAll(MenuElement... elements) {
-        for (MenuElement element : elements) {
+    /* Reading and writing from the model */
+
+    public final void readValues() {
+        if (visible) {
+            onReadValues();
+        }
+    }
+
+    public final void writeValues() {
+        onWriteValues();
+    }
+
+    // Overridable
+    protected void onReadValues() {}
+    protected void onWriteValues() {}
+
+    /* Showing and hiding of the window */
+
+    public final void show() {
+        if (!visible) {
+            visible = true;
+            onShow();
+            onReadValues();
+        }
+    }
+
+    public final void hide() {
+        if (visible) {
+            visible = false;
+            onHide();
+        }
+    }
+
+    // Overridable
+    protected void onShow() {}
+    protected void onHide() {}
+
+    /* Window elements & positions */
+
+    protected final void addAll(MenuElement... list) {
+        for (MenuElement element : list) {
             add(element);
         }
     }
@@ -98,11 +121,6 @@ public abstract class PopupWindow {
         }
     }
 
-    private boolean menuRectPressed() {
-        return (menuRect.x < mouseX && mouseX < menuRect.x + menuRect.w
-            &&  menuRect.y < mouseY && mouseY < menuRect.y + menuRect.h);
-    }
-
     // Protected inner class
     protected class MenuRect {
         float x, y, w, h;
@@ -111,23 +129,23 @@ public abstract class PopupWindow {
             rect(x, y, w, h, curve, curve, curve, curve);
         }
     }
-
 }
 
 public abstract class DraggableWindow extends PopupWindow {
 
     private boolean selectedWindow = false;
-    private PVector startPos = new PVector();
+    private PVector startPos;
 
     @Override
     protected void selectWindow() {
         selectedWindow = true;
-        startPos.set(menuRect.x, menuRect.y);
+        startPos = new PVector(menuRect.x, menuRect.y);
     }
 
     @Override
     protected void deselectWindow() {
         selectedWindow = false;
+        startPos = null;
     }
 
     @Override
@@ -140,5 +158,4 @@ public abstract class DraggableWindow extends PopupWindow {
             super.mouseDragged();
         }
     }
-
 }

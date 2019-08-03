@@ -14,9 +14,7 @@ public class Menu extends PopupWindow {
         updateItemPositions();
     }
 
-    protected void display_i() {
-        if (elements.isEmpty()) return;
-
+    protected void onDisplay() {
         // Only re-calculate the positions if the width has changed
         if (width != lastWidth) {
             updateMenuPositions();

@@ -15,7 +15,7 @@ public abstract class MenuElement {
     public void onPressed() {}
     public void onDragged() {}
 
-    public boolean mousePressed() {
+    public final boolean mousePressed() {
         hovered = checkHovered();
         if (hovered) {
             onPressed();
@@ -23,23 +23,23 @@ public abstract class MenuElement {
         return hovered;
     }
 
-    public void setPos(float x, float y) {
+    public final void setPos(float x, float y) {
         this.pos.set(x, y);
     }
 
-    public void setOffset(float x, float y) {
+    public final void setOffset(float x, float y) {
         this.offset.set(x, y);
     }
 
-    public void setWindow(PopupWindow window) {
+    public final void setWindow(PopupWindow window) {
         this.window = window;
     }
 
-    public PopupWindow getWindow() {
+    public final PopupWindow getWindow() {
         return this.window;
     }
 
-    protected PVector getRealPos() {
+    protected final PVector getRealPos() {
         return PVector.add(pos, offset);
     }
 
@@ -157,7 +157,7 @@ public abstract class MenuSlider extends MenuElement {
         selection = (selection < min) ? min : (selection > max) ? max : selection;
 
         if (setValue(selection)) {
-            window.collectValues();
+            window.writeValues();
         }
     }
 

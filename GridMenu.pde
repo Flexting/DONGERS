@@ -51,7 +51,7 @@ public class GridMenu extends DraggableWindow {
     }
 
     @Override
-    public void show_i() {
+    public void onShow() {
         centerScreen();
         startHue = grid.getHue();
         startBright = grid.getBrightness();
@@ -59,7 +59,7 @@ public class GridMenu extends DraggableWindow {
         startWeight = grid.getWeight();
     }
 
-    protected void display_i() {
+    protected void onDisplay() {
         stroke(0);
         strokeWeight(2);
         fill(255);
@@ -70,7 +70,8 @@ public class GridMenu extends DraggableWindow {
         }
     }
 
-    public void updateValues_i() {
+    @Override
+    protected void onReadValues() {
         hueSlider.setValue(grid.getHue());
         brightSlider.setValue(grid.getBrightness());
         opacitySlider.setValue(grid.getOpacity());
@@ -78,7 +79,7 @@ public class GridMenu extends DraggableWindow {
     }
 
     @Override
-    public void collectValues() {
+    protected void onWriteValues() {
         grid.setHue(hueSlider.getValue());
         grid.setBrightness(brightSlider.getValue());
         grid.setOpacity(opacitySlider.getValue());
@@ -148,8 +149,6 @@ public class GridMenu extends DraggableWindow {
     public void apply() {
         hide();
     }
-
-
 
     private class CancelButton extends MenuButton {
         public CancelButton() {

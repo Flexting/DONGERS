@@ -134,7 +134,7 @@ public class Grid {
 
     private void updateGridMenu() {
         if (gridMenu != null) {
-            gridMenu.updateValues();
+            gridMenu.readValues();
         }
     }
 
