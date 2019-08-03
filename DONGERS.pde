@@ -171,7 +171,7 @@ private void scaleImageToScreen() {
 public void imageChosen(File file) {
     if (file != null && file.exists()) {
         inputImage.setImage(loadImage(file.getAbsolutePath())); 
-        scaleImageToScreen();
+        resetImage();
         grid.createGrid();
     }
 }
@@ -195,7 +195,6 @@ public void rotateImageRight() {
 }
 
 public void resetImage() {
-    zoom = 1;
-    imgPos = new PVector(0, 0);
+    imgPos.set(0, 0);
     scaleImageToScreen();
 }
