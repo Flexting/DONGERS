@@ -6,6 +6,8 @@ public abstract class PopupWindow {
     protected final MenuRect menuRect;
     protected final List<MenuElement> elements;
 
+    private int lastWidth = 0;
+    private int lastHeight = 0;
     protected boolean visible = false;
     protected MenuElement selectedElement = null;
 
@@ -22,6 +24,11 @@ public abstract class PopupWindow {
 
     public final void display() {
         if (visible && !elements.isEmpty()) {
+            if (width != lastWidth || height != lastHeight) {
+                onResize();
+                lastWidth = width;
+                lastHeight = height;
+            }
             onDisplay();
         }
     }
@@ -124,14 +131,22 @@ public abstract class PopupWindow {
 
     public final void resetWindowPos() {
         PVector pos = getPreferredWindowPos();
-        if (pos.x != menuRect.x || pos.y != menuRect.y) {
-            menuRect.x = pos.x;
-            menuRect.y = pos.y;
+        setWindowPos(pos.x, pos.y);
+    }
+
+    protected final void setWindowPos(float x, float y) {
+        x = (x < 0) ? 0 : (x > width - menuRect.w) ? width - menuRect.w : x;
+        y = (y < 0) ? 0 : (y > height - menuRect.h) ? height - menuRect.h : y;
+
+        if (x != menuRect.x || y != menuRect.y) {
+            menuRect.x = x;
+            menuRect.y = y;
             updateOffsets();
         }
     }
 
     protected abstract PVector getPreferredWindowPos();
+    protected abstract void onResize();
 
     // Protected inner class
     protected class MenuRect {
@@ -163,11 +178,16 @@ public abstract class DraggableWindow extends PopupWindow {
     @Override
     public void mouseDragged() {
         if (selectedWindow) {
-            menuRect.x = startPos.x + mouseX - mouseDownPos.x;
-            menuRect.y = startPos.y + mouseY - mouseDownPos.y;
-            updateOffsets();
+            float x = startPos.x + mouseX - mouseDownPos.x;
+            float y = startPos.y + mouseY - mouseDownPos.y;
+            setWindowPos(x, y);
         } else {
             super.mouseDragged();
         }
+    }
+    
+    protected void onResize() {
+        // Force window to be in the bounds of the screen, for all draggable menus
+        setWindowPos(menuRect.x, menuRect.y);
     }
 }
