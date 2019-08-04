@@ -7,6 +7,7 @@ float zoom = 1;    // Zoom level of the image
 // Don't Modify
 DraggableImage inputImage;    // Image displayed on screen
 DraggableImage selectedDraggableImage;
+ArrayList<DraggableImage> characters;
 Grid grid;
 
 Menu menu;
@@ -32,6 +33,8 @@ public void setup() {
 private void initialise() {
     inputImage = new DraggableImage();
     grid = new Grid();
+    characters = new ArrayList<DraggableImage>();
+    characters.add(new DraggableImage(sketchPath() + "/images/playerIcons/Scott.jpg"));
 
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
@@ -60,6 +63,10 @@ public void draw() {
         inputImage.display();
         
         grid.display(imgOffset.x, imgOffset.y);
+    }
+    
+    for (DraggableImage character: characters) {
+        character.display();
     }
 
     menu.display();
@@ -91,9 +98,20 @@ public void mousePressed() {
     else if (menu.mousePressed()) {
         selectedWindow = menu;
     }
-    // The image pressed
     else {
-        dragging = true;
+        // Character pressed
+        selectedDraggableImage = null;
+        for (DraggableImage character : characters) {
+            if (character.mousePressed()) {
+                selectedDraggableImage = character;
+                break;
+            }
+        }
+        
+        // The image pressed
+        if (selectedDraggableImage == null) {
+            dragging = true;
+        }
     }
 }
 
@@ -102,6 +120,12 @@ public void mouseDragged() {
         selectedWindow.mouseDragged();
         return;
     }
+    
+    if (selectedDraggableImage != null) {
+        selectedDraggableImage.mouseDragged();
+        return;
+    }
+    
     if (dragging == false) return;
 
     boolean dragGrid = shiftHeld;
