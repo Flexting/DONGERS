@@ -59,6 +59,17 @@ public class Grid {
         return true;
     }
 
+    public boolean setSaturation(int saturation) {
+        // Don't recreate the grid for the same saturation
+        if (saturation == this.gridSaturation) {
+            return false;
+        }
+
+        this.gridSaturation = saturation;
+        createGrid();
+        return true;
+    }
+
     public boolean setBrightness(int brightness) {
         // Don't recreate the grid for the same brightness
         if (brightness == this.gridBrightness) {
@@ -148,6 +159,10 @@ public class Grid {
 
     public int getHue() {
         return this.gridHue;
+    }
+
+    public int getSaturation() {
+        return this.gridSaturation;
     }
 
     public int getBrightness() {

@@ -7,6 +7,8 @@ public class GridMenu extends DraggableWindow {
 
     private MenuLabel hueLabel;
     private MenuIntSlider hueSlider;
+    private MenuLabel saturLabel;
+    private MenuIntSlider saturSlider;
     private MenuLabel brightLabel;
     private MenuIntSlider brightSlider;
     private MenuLabel opacityLabel;
@@ -15,6 +17,7 @@ public class GridMenu extends DraggableWindow {
     private MenuFloatSlider weightSlider;
 
     private int startHue;
+    private int startSatur;
     private int startBright;
     private int startOpacity;
     private float startWeight;
@@ -30,12 +33,14 @@ public class GridMenu extends DraggableWindow {
         this.grid = grid;
 
         hueLabel = new MenuLabel("Hue");
+        saturLabel = new MenuLabel("Satur.");
         brightLabel = new MenuLabel("Bright");
         opacityLabel = new MenuLabel("Alpha");
         weightLabel = new MenuLabel("Weight");
 
         hueSlider = new MenuIntSlider(0, 255, 8);
-        brightSlider = new MenuIntSlider(0, 255, 8);
+        saturSlider = new MenuIntSlider(0, 255, 16);
+        brightSlider = new MenuIntSlider(0, 255, 16);
         opacitySlider = new MenuIntSlider(0, 255, 32);
         weightSlider = new MenuFloatSlider(1.0, 10.0, 0.5);
 
@@ -43,8 +48,8 @@ public class GridMenu extends DraggableWindow {
         revertButton = new RevertButton();
         applyButton = new ApplyButton();
 
-        addAll(hueLabel, brightLabel, opacityLabel, weightLabel,
-            hueSlider, brightSlider, opacitySlider, weightSlider,
+        addAll(hueLabel, saturLabel, brightLabel, opacityLabel, weightLabel,
+            hueSlider, saturSlider, brightSlider, opacitySlider, weightSlider,
             cancelButton, revertButton, applyButton);
 
         createMenuPositions();
@@ -53,6 +58,7 @@ public class GridMenu extends DraggableWindow {
     @Override
     public void onShow() {
         startHue = grid.getHue();
+        startSatur = grid.getSaturation();
         startBright = grid.getBrightness();
         startOpacity = grid.getOpacity();
         startWeight = grid.getWeight();
@@ -72,6 +78,7 @@ public class GridMenu extends DraggableWindow {
     @Override
     protected void onReadValues() {
         hueSlider.setValue(grid.getHue());
+        saturSlider.setValue(grid.getSaturation());
         brightSlider.setValue(grid.getBrightness());
         opacitySlider.setValue(grid.getOpacity());
         weightSlider.setValue(grid.getWeight());
@@ -80,6 +87,7 @@ public class GridMenu extends DraggableWindow {
     @Override
     protected void onWriteValues() {
         grid.setHue(hueSlider.getValue());
+        grid.setSaturation(saturSlider.getValue());
         grid.setBrightness(brightSlider.getValue());
         grid.setOpacity(opacitySlider.getValue());
         grid.setWeight(weightSlider.getValue());
@@ -96,6 +104,11 @@ public class GridMenu extends DraggableWindow {
         hueLabel.setPos(x, y + sliderHeight / 2);
         hueSlider.setDimensions(sliderW, sliderHeight);
         hueSlider.setPos(sliderX, y);
+        y += sliderHeight + spacing;
+
+        saturLabel.setPos(x, y + sliderHeight / 2);
+        saturSlider.setDimensions(sliderW, sliderHeight);
+        saturSlider.setPos(sliderX, y);
         y += sliderHeight + spacing;
 
         brightLabel.setPos(x, y + sliderHeight / 2);
@@ -140,6 +153,7 @@ public class GridMenu extends DraggableWindow {
 
     public void revert() {
         grid.setHue(startHue);
+        grid.setSaturation(startSatur);
         grid.setBrightness(startBright);
         grid.setOpacity(startOpacity);
         grid.setWeight(startWeight);
