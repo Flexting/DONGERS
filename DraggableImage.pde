@@ -48,6 +48,16 @@ public class DraggableImage extends Image {
         return (mousePos.x > imgPos.x - imgWidth/2.0 && mousePos.x < imgPos.x + imgWidth/2.0)
             && (mousePos.y > imgPos.y - imgHeight/2.0 && mousePos.y < imgPos.y + imgHeight/2.0);
     }
+
+    public void moveImage(int direction, int amount) {
+        switch (direction) {
+            case UP:    pos.y -= amount; break;
+            case DOWN:  pos.y += amount; break;
+            case LEFT:  pos.x -= amount; break;
+            case RIGHT: pos.x += amount; break;
+            //default: println("Invalid direction " + direction); break;
+        }
+    }
     
     /* Mouse functions */
 

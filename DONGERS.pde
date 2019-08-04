@@ -138,6 +138,7 @@ public void mouseDragged() {
         inputImage.setDraggedPos(tempPos);
     }
 
+    // Characters move with grid or the background
     for (DraggableImage character : characters) {
         character.setDraggedPos(tempPos);
     }
@@ -220,15 +221,10 @@ public void zoom(float amount) {
 }
 
 public void moveImage(int direction, int amount) {
-    PVector imgPos = inputImage.getPos();
-    switch (direction) {
-        case UP:    imgPos.y -= amount; break;
-        case DOWN:  imgPos.y += amount; break;
-        case LEFT:  imgPos.x -= amount; break;
-        case RIGHT: imgPos.x += amount; break;
-        //default: println("Invalid direction " + direction); break;
+    inputImage.moveImage(direction, amount);
+    for (DraggableImage character : characters) {
+        character.moveImage(direction, amount);
     }
-    inputImage.setPos(imgPos);
 }
 
 private void scaleImageToScreen() {
