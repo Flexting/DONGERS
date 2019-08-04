@@ -209,13 +209,11 @@ public void zoom(float amount) {
     PVector imgPos = inputImage.getPos();
     imgPos.x = imgPos.x * scale + deltaPos.x;
     imgPos.y = imgPos.y * scale + deltaPos.y;
-    inputImage.setPos(imgPos);
     
     for (DraggableImage character : characters) {
         PVector characterPos = character.getPos();
-        float characterX = characterPos.x * scale + deltaPos.x;
-        float characterY = characterPos.y * scale + deltaPos.y;
-        character.setPos(characterX, characterY);
+        characterPos.x = characterPos.x * scale + deltaPos.x;
+        characterPos.y = characterPos.y * scale + deltaPos.y;
     }
     zoom = newZoom;
 }
