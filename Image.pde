@@ -30,17 +30,23 @@ public class Image {
     }
     
     public void display() {
+        display(0, 0);    
+    }
+    
+    public void display(float offsetX, float offsetY) {
         if (img == null) return;
 
         PVector center = new PVector(width/2, height/2);
         PVector imgCenter = new PVector(img.width/2, img.height/2);
 
-        float dx = center.x / zoom,    // Draw image at x coord
+        float x = pos.x + offsetX,    // Image pos with drawing offset
+              y = pos.y + offsetY,    // Image pos with drawing offset
+              dx = center.x / zoom,    // Draw image at x coord
               dy = center.y / zoom,    // Draw image at y coord
               dw = width / zoom,     // Draw image with width
               dh = height / zoom;    // Draw image with height
-        int   sx1 = (int) (imgCenter.x - dx - pos.x / zoom),    // Use image region x1
-              sy1 = (int) (imgCenter.y - dy - pos.y / zoom),    // Use image region y1
+        int   sx1 = (int) (imgCenter.x - dx - x / zoom),    // Use image region x1
+              sy1 = (int) (imgCenter.y - dy - y / zoom),    // Use image region y1
               sx2 = sx1 + (int) dw,    // Use image region x2
               sy2 = sy1 + (int) dh;    // Use image region y2
               
