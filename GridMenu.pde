@@ -64,17 +64,6 @@ public class GridMenu extends DraggableWindow {
         startWeight = grid.getWeight();
     }
 
-    protected void onDisplay() {
-        stroke(0);
-        strokeWeight(2);
-        fill(255);
-
-        menuRect.display();
-        for (MenuElement element : elements) {
-            element.display();
-        }
-    }
-
     @Override
     protected void onReadValues() {
         hueSlider.setValue(grid.getHue());

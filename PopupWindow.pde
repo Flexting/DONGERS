@@ -29,11 +29,20 @@ public abstract class PopupWindow {
                 lastWidth = width;
                 lastHeight = height;
             }
-            onDisplay();
+
+            stroke(0);
+            strokeWeight(2);
+            fill(255);
+            menuRect.display();
+            for (MenuElement element : elements) {
+                element.display();
+            }
+            //onDisplay();
         }
     }
 
-    protected abstract void onDisplay();
+    // Overridable, currently unused. Uncomment when required.
+    //protected void onDisplay() {}
 
     /* Mouse functions */
 

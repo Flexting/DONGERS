@@ -10,16 +10,6 @@ public class Menu extends PopupWindow {
         updateItemPositions();
     }
 
-    protected void onDisplay() {
-        stroke(0);
-        strokeWeight(2);
-        fill(255);
-        menuRect.display();
-        for (MenuElement element : elements) {
-            element.display();
-        }
-    }
-
     protected PVector getPreferredWindowPos() {
         float x = (width - menuRect.w) / 2.0;
         float y = 0;
@@ -36,7 +26,7 @@ public class Menu extends PopupWindow {
         menuRect.w = count * MenuButton.size + spacing * (count - 1) + borderHorizontal * 2;
         menuRect.h = MenuButton.size + borderVertical * 2;
 
-        for (int i = 0; i < elements.size(); ++i) {
+        for (int i = 0; i < count; ++i) {
             MenuButton item = (MenuButton) elements.get(i);
             float itemX = borderHorizontal/2.0 + (MenuButton.size + spacing) * (i + 0.5);
             item.setPos(itemX, menuRect.h/2);
