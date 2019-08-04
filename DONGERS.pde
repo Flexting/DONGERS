@@ -63,10 +63,10 @@ public void draw() {
         inputImage.display();
         
         grid.display(imgOffset.x, imgOffset.y);
-    }
-    
-    for (DraggableImage character: characters) {
-        character.display();
+        
+        for (DraggableImage character : characters) {
+            character.display();
+        }
     }
 
     menu.display();
@@ -136,6 +136,9 @@ public void mouseDragged() {
         grid.setTempPos(tempPos);
     } else {    
         inputImage.setDraggedPos(tempPos);
+        for (DraggableImage character : characters) {
+            character.setDraggedPos(tempPos);
+        }
     }
 }
 
@@ -154,7 +157,9 @@ public void mouseReleased() {
     if (dragging == false) return;
 
     inputImage.updatePos();
-
+    for (DraggableImage character : characters) {
+        character.updatePos();
+    }
     grid.updateGridPosition(true);
     dragging = false;
 }
@@ -205,7 +210,13 @@ public void zoom(float amount) {
     imgPos.x = imgPos.x * scale + deltaPos.x;
     imgPos.y = imgPos.y * scale + deltaPos.y;
     inputImage.setPos(imgPos);
-
+    
+    for (DraggableImage character : characters) {
+        PVector characterPos = character.getPos();
+        float characterX = characterPos.x * scale + deltaPos.x;
+        float characterY = characterPos.y * scale + deltaPos.y;
+        character.setPos(characterX, characterY);
+    }
     zoom = newZoom;
 }
 

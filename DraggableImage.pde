@@ -35,13 +35,17 @@ public class DraggableImage extends Image {
     }
     
     public void display() {
+        display(0, 0);
+    }
+    
+    public void display(float offsetX, float offsetY) {
         if (img == null) return;
 
         PVector center = new PVector(width/2, height/2);
         PVector imgCenter = new PVector(img.width/2, img.height/2);
 
-        float x = pos.x + draggedPos.x,    // Image pos with drawing offset
-              y = pos.y + draggedPos.y,    // Image pos with drawing offset
+        float x = pos.x + draggedPos.x + offsetX,    // Image pos with drawing offset
+              y = pos.y + draggedPos.y + offsetY,    // Image pos with drawing offset
               dx = center.x / zoom,    // Draw image at x coord
               dy = center.y / zoom,    // Draw image at y coord
               dw = width / zoom,     // Draw image with width
