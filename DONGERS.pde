@@ -136,9 +136,10 @@ public void mouseDragged() {
         grid.setTempPos(tempPos);
     } else {    
         inputImage.setDraggedPos(tempPos);
-        for (DraggableImage character : characters) {
-            character.setDraggedPos(tempPos);
-        }
+    }
+
+    for (DraggableImage character : characters) {
+        character.setDraggedPos(tempPos);
     }
 }
 
