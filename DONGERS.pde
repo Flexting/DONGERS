@@ -5,14 +5,12 @@ import java.io.File;
 float zoom = 1;    // Zoom level of the image
 
 // Don't Modify
-Image inputImage;    // Image displayed on screen
+DraggableImage inputImage;    // Image displayed on screen
+DraggableImage selectedDraggableImage;
 Grid grid;
 
 Menu menu;
 GridMenu gridMenu;
-
-PVector imgPos = new PVector(0, 0);    // Image x/y position
-PVector imgTempPos = new PVector(0, 0);    // Image temp x/y position used for drawing
 
 PVector mouseDownPos, mouseUpPos;    // Track the location of the mouse being pressed and released
 PopupWindow selectedWindow = null;
@@ -32,7 +30,7 @@ public void setup() {
 }
 
 private void initialise() {
-    inputImage = new Image();
+    inputImage = new DraggableImage();
     grid = new Grid();
 
     //selectInput("Select an image", "imageChosen");  
@@ -53,11 +51,12 @@ private void initialise() {
 }
 
 public void draw() {
-    PVector imgOffset = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     background(200);
+    PVector imgPos = inputImage.getPos();
+    PVector imgDraggedPos = inputImage.getDraggedPos();
+    PVector imgOffset = new PVector(imgPos.x + imgDraggedPos.x, imgPos.y + imgDraggedPos.y);
 
     if (inputImage != null) {
-        inputImage.setPos(imgOffset.x, imgOffset.y);
         inputImage.display();
         
         grid.display(imgOffset.x, imgOffset.y);
@@ -112,7 +111,7 @@ public void mouseDragged() {
     if (dragGrid) {    
         grid.setTempPos(tempPos);
     } else {    
-        imgTempPos = tempPos;
+        inputImage.setDraggedPos(tempPos);
     }
 }
 
@@ -123,10 +122,14 @@ public void mouseReleased() {
         selectedWindow = null;
         return;
     }
+    if (selectedDraggableImage != null) {
+        selectedDraggableImage.mouseReleased();
+        selectedDraggableImage = null;
+        return;
+    }
     if (dragging == false) return;
 
-    imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
-    imgTempPos = new PVector();
+    inputImage.updatePos();
 
     grid.updateGridPosition(true);
     dragging = false;
@@ -174,13 +177,16 @@ public void zoom(float amount) {
     PVector deltaPos = new PVector(pos.x * mult, pos.y * mult);
 
     // Apply the scale and shift by the delta
+    PVector imgPos = inputImage.getPos();
     imgPos.x = imgPos.x * scale + deltaPos.x;
     imgPos.y = imgPos.y * scale + deltaPos.y;
+    inputImage.setPos(imgPos);
 
     zoom = newZoom;
 }
 
 public void moveImage(int direction, int amount) {
+    PVector imgPos = inputImage.getPos();
     switch (direction) {
         case UP:    imgPos.y -= amount; break;
         case DOWN:  imgPos.y += amount; break;
@@ -188,6 +194,7 @@ public void moveImage(int direction, int amount) {
         case RIGHT: imgPos.x += amount; break;
         //default: println("Invalid direction " + direction); break;
     }
+    inputImage.setPos(imgPos);
 }
 
 private void scaleImageToScreen() {
@@ -229,6 +236,6 @@ public void rotateImageRight() {
 }
 
 public void resetImage() {
-    imgPos.set(0, 0);
+    inputImage.setPos(0, 0);
     scaleImageToScreen();
 }

@@ -5,7 +5,7 @@ public class Image {
     
     public Image() {
         this.img = null;
-        this.pos = new PVector(0, 0);
+        this.pos = new PVector();
     }
     
     public void setImage(String path) {
