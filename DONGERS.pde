@@ -5,14 +5,19 @@ import java.io.File;
 float zoom = 1;    // Zoom level of the image
 
 // Don't Modify
-Menu menu;
 Image inputImage;    // Image displayed on screen
 Grid grid;
+
+Menu menu;
+GridMenu gridMenu;
 
 PVector imgPos = new PVector(0, 0);    // Image x/y position
 PVector imgTempPos = new PVector(0, 0);    // Image temp x/y position used for drawing
 
 PVector mouseDownPos, mouseUpPos;    // Track the location of the mouse being pressed and released
+PopupWindow selectedWindow = null;
+boolean dragging = false;   // If the image is being dragged
+
 boolean shiftHeld = false;
 
 // Constants
@@ -28,17 +33,23 @@ public void setup() {
 
 private void initialise() {
     inputImage = new Image();
+    grid = new Grid();
+
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
     inputImage.setImage(loadImage(sketchPath() + "/Forest.png"));
+    grid.createGrid();
     // ***** Remove these lines in final version
-    grid = new Grid();
     
-    menu = new Menu();
+    Menu menu = new Menu();
     menu.addItem(new LoadImageButton());
     menu.addItem(new ToggleGridButton());
+    menu.addItem(new GridMenuButton());
     menu.addItem(new RotateImageRightButton());
     menu.addItem(new ResetButton());
+    this.menu = menu;
+
+    gridMenu = new GridMenu(grid);
 }
 
 public void draw() {
@@ -53,6 +64,7 @@ public void draw() {
     }
 
     menu.display();
+    gridMenu.display();
     //text("FPS: " + (int)frameRate, 16, 16);
 }
 
@@ -70,16 +82,28 @@ public void mouseWheel(MouseEvent event) {
 }
 
 public void mousePressed() {
-    boolean itemPressed = menu.mousePressed();
-    if (itemPressed) {
-        mouseDownPos = null;
-    } else {
-        mouseDownPos = new PVector(mouseX, mouseY);
+    mouseDownPos = new PVector(mouseX, mouseY);
+
+    // Grid menu pressed
+    if (gridMenu.mousePressed()) {
+        selectedWindow = gridMenu;
+    }
+    // Main tool menu pressed
+    else if (menu.mousePressed()) {
+        selectedWindow = menu;
+    }
+    // The image pressed
+    else {
+        dragging = true;
     }
 }
 
 public void mouseDragged() {
-    if (mouseDownPos == null) return;
+    if (selectedWindow != null) {
+        selectedWindow.mouseDragged();
+        return;
+    }
+    if (dragging == false) return;
 
     boolean dragGrid = shiftHeld;
     PVector mouseCurrentPos = new PVector(mouseX, mouseY),
@@ -94,12 +118,18 @@ public void mouseDragged() {
 
 // Set the imgPos to the imgTempPos and reset the imgTempPos
 public void mouseReleased() {
-    if (mouseDownPos == null) return;
+    if (selectedWindow != null) {
+        selectedWindow.mouseReleased();
+        selectedWindow = null;
+        return;
+    }
+    if (dragging == false) return;
 
     imgPos = new PVector(imgPos.x + imgTempPos.x, imgPos.y + imgTempPos.y);
     imgTempPos = new PVector();
 
     grid.updateGridPosition(true);
+    dragging = false;
 }
 
 public void keyPressed() {
@@ -111,7 +141,7 @@ public void keyPressed() {
     }
     // 1-9
     if (keyCode >= 49 && keyCode <= 57) {
-        float weight = (keyCode - 48) / 2.0 + 0.5; 
+        float weight = (keyCode - 48); 
         grid.setWeight(weight);
     }
     // Direction arrow
@@ -178,6 +208,10 @@ public void imageChosen(File file) {
 
 public void toggleGrid() {
     grid.toggle();
+}
+
+public void showGridMenu() {
+    gridMenu.show();
 }
 
 public void rotateImageRight() {
