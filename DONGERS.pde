@@ -263,9 +263,21 @@ public void rotateImageRight() {
     img.updatePixels();
     inputImage.setImage(img.copy());
     grid.createGrid();
+
+    // Move character heads given the origin of the image
+    for (DraggableImage character : characters) {
+        character.rotateRightAround(inputImage.getPos());
+    }
 }
 
 public void resetImage() {
-    inputImage.setPos(0, 0);
     scaleImageToScreen();
+
+    inputImage.setPos(0, 0);
+    // Also reset character positions, we may potentially want to move them
+    // relative to how the base image moved, though the button is "reset".
+    // Moving the heads relatively will require taking zoom changes into account
+    for (DraggableImage character : characters) {
+        character.setPos(0, 0);
+    }
 }

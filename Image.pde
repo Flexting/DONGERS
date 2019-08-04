@@ -56,4 +56,10 @@ public class Image {
         image(img, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
         popMatrix();
     }
+
+    public void rotateRightAround(PVector reference) {
+        float x = reference.x - pos.x;
+        float y = reference.y - pos.y;
+        pos.set(reference.x + y, reference.y - x);
+    }
 }
