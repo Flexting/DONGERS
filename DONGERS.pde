@@ -250,7 +250,7 @@ public void rotateImageRight() {
 
     // Move character heads given the origin of the image
     for (Entity character : characters) {
-        character.rotateRightAround(inputImage.getPos());
+        character.rotateRight();
     }
 }
 

@@ -32,10 +32,10 @@ public class Entity {
         pos.set(0, 0);
     }
 
-    public void rotateRightAround(PVector reference) {
-        float x = reference.x - pos.x;
-        float y = reference.y - pos.y;
-        pos.set(reference.x + y, reference.y - x);
+    public void rotateRight() {
+        float x = pos.x;
+        float y = pos.y;
+        pos.set(-y, x);
     }
 
     /* Mouse functions */
