@@ -14,7 +14,7 @@ public class DraggableImage extends Image {
     }
     
     public void updatePos() {
-        this.pos = new PVector(pos.x + draggedPos.x, pos.y + draggedPos.y);
+        this.pos.add(draggedPos.x, draggedPos.y);
         this.draggedPos = new PVector();
     }
     
@@ -36,17 +36,6 @@ public class DraggableImage extends Image {
     
     public void display() {
         display(draggedPos.x, draggedPos.y);
-    }
-    
-    public final boolean isHovering() {
-        PVector center = new PVector(width/2, height/2);
-        PVector imgPos = new PVector(pos.x + draggedPos.x, pos.y + draggedPos.y);
-        PVector mousePos = new PVector(mouseX - center.x, mouseY - center.y);
-        float imgWidth = img.width * zoom;
-        float imgHeight = img.height * zoom;
-        
-        return (mousePos.x > imgPos.x - imgWidth/2.0 && mousePos.x < imgPos.x + imgWidth/2.0)
-            && (mousePos.y > imgPos.y - imgHeight/2.0 && mousePos.y < imgPos.y + imgHeight/2.0);
     }
 
     public void moveImage(int direction, int amount) {
@@ -73,11 +62,10 @@ public class DraggableImage extends Image {
     }
 
     public void mouseDragged() {
-        if (!dragging) return;
-        PVector mouseCurrentPos = new PVector(mouseX, mouseY),
-            tempPos = new PVector(mouseCurrentPos.x - mouseDownPos.x, mouseCurrentPos.y - mouseDownPos.y); 
-            
-        setDraggedPos(tempPos);
+        if (dragging) {
+            PVector draggedPos = new PVector(mouseX - mouseDownPos.x, mouseY - mouseDownPos.y); 
+            setDraggedPos(draggedPos);
+        }
     }
 
     public final void mouseReleased() {

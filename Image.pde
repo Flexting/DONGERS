@@ -56,10 +56,14 @@ public class Image {
         image(img, dx, dy, dw, dh, sx1, sy1, sx2, sy2);
         popMatrix();
     }
-
-    public void rotateRightAround(PVector reference) {
-        float x = reference.x - pos.x;
-        float y = reference.y - pos.y;
-        pos.set(reference.x + y, reference.y - x);
+    
+    public final boolean isHovering() {
+        PVector center = new PVector(width/2, height/2);
+        PVector mousePos = new PVector(mouseX - center.x, mouseY - center.y);
+        float imgWidth = img.width * zoom;
+        float imgHeight = img.height * zoom;
+        
+        return (mousePos.x > pos.x - imgWidth/2.0 && mousePos.x < pos.x + imgWidth/2.0)
+            && (mousePos.y > pos.y - imgHeight/2.0 && mousePos.y < pos.y + imgHeight/2.0);
     }
 }

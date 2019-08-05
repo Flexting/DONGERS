@@ -6,8 +6,8 @@ float zoom = 1;    // Zoom level of the image
 
 // Don't Modify
 DraggableImage inputImage;    // Image displayed on screen
-DraggableImage selectedDraggableImage;
-ArrayList<DraggableImage> characters;
+Entity selectedEntity;
+ArrayList<Entity> characters;
 Grid grid;
 
 Menu menu;
@@ -33,8 +33,8 @@ public void setup() {
 private void initialise() {
     inputImage = new DraggableImage();
     grid = new Grid();
-    characters = new ArrayList<DraggableImage>();
-    characters.add(new DraggableImage(sketchPath() + "/images/playerIcons/Scott.jpg"));
+    characters = new ArrayList<Entity>();
+    characters.add(new Entity(new DraggableImage(sketchPath() + "/images/playerIcons/Scott.jpg")));
 
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
@@ -64,8 +64,8 @@ public void draw() {
         
         grid.display(imgOffset.x, imgOffset.y);
         
-        for (DraggableImage character : characters) {
-            character.display();
+        for (Entity character : characters) {
+            character.display(imgOffset.x, imgOffset.y);
         }
     }
 
@@ -100,16 +100,16 @@ public void mousePressed() {
     }
     else {
         // Character pressed
-        selectedDraggableImage = null;
-        for (DraggableImage character : characters) {
+        selectedEntity = null;
+        for (Entity character : characters) {
             if (character.mousePressed()) {
-                selectedDraggableImage = character;
+                selectedEntity = character;
                 break;
             }
         }
         
         // The image pressed
-        if (selectedDraggableImage == null) {
+        if (selectedEntity == null) {
             dragging = true;
         }
     }
@@ -121,8 +121,8 @@ public void mouseDragged() {
         return;
     }
     
-    if (selectedDraggableImage != null) {
-        selectedDraggableImage.mouseDragged();
+    if (selectedEntity != null) {
+        selectedEntity.mouseDragged();
         return;
     }
     
@@ -133,14 +133,9 @@ public void mouseDragged() {
             tempPos = new PVector(mouseCurrentPos.x - mouseDownPos.x, mouseCurrentPos.y - mouseDownPos.y); 
 
     if (dragGrid) {    
-        grid.setTempPos(tempPos);
+        grid.setDraggedPos(tempPos);
     } else {    
         inputImage.setDraggedPos(tempPos);
-    }
-
-    // Characters move with grid or the background
-    for (DraggableImage character : characters) {
-        character.setDraggedPos(tempPos);
     }
 }
 
@@ -151,17 +146,14 @@ public void mouseReleased() {
         selectedWindow = null;
         return;
     }
-    if (selectedDraggableImage != null) {
-        selectedDraggableImage.mouseReleased();
-        selectedDraggableImage = null;
+    if (selectedEntity != null) {
+        selectedEntity.mouseReleased();
+        selectedEntity = null;
         return;
     }
     if (dragging == false) return;
 
     inputImage.updatePos();
-    for (DraggableImage character : characters) {
-        character.updatePos();
-    }
     grid.updateGridPosition(true);
     dragging = false;
 }
@@ -212,19 +204,11 @@ public void zoom(float amount) {
     imgPos.x = imgPos.x * scale + deltaPos.x;
     imgPos.y = imgPos.y * scale + deltaPos.y;
     
-    for (DraggableImage character : characters) {
-        PVector characterPos = character.getPos();
-        characterPos.x = characterPos.x * scale + deltaPos.x;
-        characterPos.y = characterPos.y * scale + deltaPos.y;
-    }
     zoom = newZoom;
 }
 
 public void moveImage(int direction, int amount) {
     inputImage.moveImage(direction, amount);
-    for (DraggableImage character : characters) {
-        character.moveImage(direction, amount);
-    }
 }
 
 private void scaleImageToScreen() {
@@ -265,19 +249,15 @@ public void rotateImageRight() {
     grid.createGrid();
 
     // Move character heads given the origin of the image
-    for (DraggableImage character : characters) {
+    for (Entity character : characters) {
         character.rotateRightAround(inputImage.getPos());
     }
 }
 
 public void resetImage() {
     scaleImageToScreen();
-
     inputImage.setPos(0, 0);
-    // Also reset character positions, we may potentially want to move them
-    // relative to how the base image moved, though the button is "reset".
-    // Moving the heads relatively will require taking zoom changes into account
-    for (DraggableImage character : characters) {
-        character.setPos(0, 0);
+    for (Entity character : characters) {
+        character.resetPos();
     }
 }
