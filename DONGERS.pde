@@ -34,10 +34,10 @@ private void initialise() {
     inputImage = new DraggableImage();
     grid = new Grid();
     characters = new ArrayList<Entity>();
-    characters.add(new Entity(new DraggableImage(sketchPath() + "/images/playerIcons/Scott.jpg")));
 
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
+    //characters.add(new Entity(new DraggableImage(sketchPath() + "/images/playerIcons/Scott.jpg")));
     inputImage.setImage(loadImage(sketchPath() + "/Forest.png"));
     grid.createGrid();
     // ***** Remove these lines in final version
