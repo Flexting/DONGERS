@@ -4,8 +4,8 @@ public class Grid {
 
     private Image grid; // Grid displayed over the top of the image
 
-    private PVector gridPos; // Grid x/y position
-    private PVector gridTempPos; // Grid temp x/y position used for dragging
+    private PVector pos; // Grid x/y position
+    private PVector draggedPos; // Grid temp x/y position used for dragging
 
     private boolean showGrid = true;
     private float gridSize = 60; // Size of the overlay grid
@@ -17,14 +17,14 @@ public class Grid {
     private int gridOpacity = 255;
 
     public Grid() {
-        grid = new Image();
-        gridPos = new PVector();
-        gridTempPos = new PVector();
+        this.grid = new Image();
+        this.pos = new PVector();
+        this.draggedPos = new PVector();
     }
 
     public void display(float x, float y) {
         if (showGrid) {
-            grid.setPos(x + gridTempPos.x, y + gridTempPos.y);
+            grid.setPos(x + draggedPos.x, y + draggedPos.y);
             grid.display();
         }
     }
@@ -33,8 +33,8 @@ public class Grid {
         showGrid = !showGrid;
     }
 
-    public void setTempPos(PVector pos) {
-        this.gridTempPos = pos;
+    public void setDraggedPos(PVector pos) {
+        this.draggedPos = pos;
     }
 
     public boolean setWeight(float weight) {
@@ -106,14 +106,14 @@ public class Grid {
     }
 
     public boolean updateGridPosition(boolean redraw) {
-        PVector newPos = new PVector((gridPos.x + gridTempPos.x / zoom) % gridSize, (gridPos.y + gridTempPos.y / zoom) % gridSize);
+        PVector newPos = new PVector((pos.x + draggedPos.x / zoom) % gridSize, (pos.y + draggedPos.y / zoom) % gridSize);
         // Don't recreate the grid for the same size
-        if (gridPos.equals(newPos)) {
+        if (pos.equals(newPos)) {
             return false;
         }
 
-        gridPos = newPos;
-        gridTempPos = new PVector();
+        pos = newPos;
+        draggedPos = new PVector();
         if (redraw) {
             createGrid();
         }
@@ -129,12 +129,12 @@ public class Grid {
         grid.stroke(gridHue, gridSaturation, gridBrightness, gridOpacity);
 
         for (int i = 0; i <= grid.width / gridSize; ++i) {
-            float x = gridSize * i + gridPos.x;
+            float x = gridSize * i + pos.x;
             grid.line(x, 0, x, grid.height);
         }
 
         for (int i = 0; i <= grid.height / gridSize; ++i) {
-            float y = gridSize * i + gridPos.y;
+            float y = gridSize * i + pos.y;
             grid.line(0, y, grid.width, y);
         }
 
