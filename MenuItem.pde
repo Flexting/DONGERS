@@ -12,12 +12,24 @@ public abstract class MenuElement {
 
     protected abstract boolean checkHovered();
 
+    /* Tool tips */
+
     public final void displayToolTip() {
-        strokeWeight(2);
         onDisplayToolTip();
     }
     // Overridable
     public void onDisplayToolTip() {}
+
+    protected final void drawToolTip(String toolTip, int x, int y, float w, float h, int padding) {
+        strokeWeight(2);
+        // Rectangle
+        fill(255);
+        rect(x, y, w + 2*padding, h + 2*padding);
+        // Text
+        fill(0);
+        textAlign(LEFT, TOP);
+        text(toolTip, x + padding, y + padding);
+    }
 
     /* Mouse functions */
 
@@ -137,13 +149,7 @@ public abstract class MenuButton extends MenuElement {
             textSize(h);
             float w = textWidth(toolTip);
 
-            // Rectangle
-            fill(255);
-            rect(x, y, w + 2*ttPadding, h + 2*ttPadding);
-            // Text
-            fill(0);
-            textAlign(LEFT, TOP);
-            text(toolTip, x + ttPadding, y + ttPadding);
+            drawToolTip(toolTip, x, y, w, h, ttPadding);
         }
     }
 }
@@ -233,13 +239,7 @@ public abstract class MenuSlider extends MenuElement {
             int x = pinX - ttPadding - (int) (w/2);
             int y = pinY + ttOffset;
 
-            // Rectangle
-            fill(255);
-            rect(x, y, w + 2*ttPadding, h + 2*ttPadding);
-            // Text
-            fill(0);
-            textAlign(LEFT, TOP);
-            text(toolTip, x + ttPadding, y + ttPadding);
+            drawToolTip(toolTip, x, y, w, h, ttPadding);
         }
     }
 
