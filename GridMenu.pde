@@ -154,10 +154,9 @@ public class GridMenu extends DraggableWindow {
 
     private class CancelButton extends MenuButton {
         public CancelButton() {
-            super("cancel-icon.png");
+            super("cancel-icon.png", "Revert changes and close window");
         }
 
-        @Override
         public void onPressed() {
             cancel();
         }
@@ -165,10 +164,9 @@ public class GridMenu extends DraggableWindow {
 
     private class RevertButton extends MenuButton {
         public RevertButton() {
-            super("revert-icon.png");
+            super("revert-icon.png", "Revert changes");
         }
 
-        @Override
         public void onPressed() {
             revert();  
         }
@@ -176,10 +174,9 @@ public class GridMenu extends DraggableWindow {
 
     private class ApplyButton extends MenuButton {
         public ApplyButton() {
-            super("apply-icon.png");
+            super("apply-icon.png", "Apply changes and close window");
         }
 
-        @Override
         public void onPressed() {
             apply();  
         }

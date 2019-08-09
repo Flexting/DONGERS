@@ -1,10 +1,9 @@
 
 public class ToggleGridButton extends MenuButton {
     public ToggleGridButton() {
-        super("grid-icon.png");
+        super("grid-icon.png", "Toggle the grid visiblity");
     }
 
-    @Override
     public void onPressed() {
         toggleGrid();
     }
@@ -12,10 +11,9 @@ public class ToggleGridButton extends MenuButton {
 
 public class LoadImageButton extends MenuButton {
     public LoadImageButton() {
-        super("open-icon.png");
+        super("open-icon.png", "Load a new background image");
     }
 
-    @Override
     public void onPressed() {
         chooseImage();
     }
@@ -23,10 +21,9 @@ public class LoadImageButton extends MenuButton {
 
 public class RotateImageRightButton extends MenuButton {
     public RotateImageRightButton() {
-        super("rotate-right-icon.png");
+        super("rotate-right-icon.png", "Rotate the board 90 degrees clockwise");
     }
 
-    @Override
     public void onPressed() {
         rotateImageRight();
     }
@@ -34,10 +31,9 @@ public class RotateImageRightButton extends MenuButton {
 
 public class ResetButton extends MenuButton {
     public ResetButton() {
-        super("reset-icon.png");
+        super("reset-icon.png", "Reset the board");
     }
 
-    @Override
     public void onPressed() {
         resetImage();
     }
@@ -45,10 +41,9 @@ public class ResetButton extends MenuButton {
 
 public class GridMenuButton extends MenuButton {
     public GridMenuButton() {
-        super("gear-icon.png");
+        super("gear-icon.png", "Open the grid options menu");
     }
 
-    @Override
     public void onPressed() {
         showGridMenu();
     }

@@ -12,6 +12,7 @@ public abstract class MenuElement {
     protected abstract boolean checkHovered();
 
     // Overridable
+    public void displayToolTip() {}
     public void onPressed() {}
     public void onDragged() {}
 
@@ -67,12 +68,23 @@ public class MenuLabel extends MenuElement {
 
 public abstract class MenuButton extends MenuElement {
 
-    private static final int size = 32;
+    private static final int size = 32; // Icon size
+    private static final int ttOffset = 10; // Tool-tip X/Y offset
+    private static final int ttPadding = 5; // Tool-tip X/Y padding
+
     private PImage img;
+    private String toolTip;
 
     public MenuButton(String imgPath) {
-        this.img = loadImage(sketchPath() + "/data/images/" + imgPath);
+        this(imgPath, "");
     }
+
+    public MenuButton(String imgPath, String toolTip) {
+        this.img = loadImage(sketchPath() + "/data/images/" + imgPath);
+        this.toolTip = toolTip;
+    }
+
+    public abstract void onPressed();
 
     public void display() {
         PVector realPos = getRealPos();
@@ -86,6 +98,8 @@ public abstract class MenuButton extends MenuElement {
 
         imageMode(CENTER);
         image(img, realPos.x, realPos.y, size, size);
+
+        displayToolTip();
     }
 
     protected boolean checkHovered() {
@@ -93,6 +107,24 @@ public abstract class MenuButton extends MenuElement {
         float dist = PVector.dist(realPos, new PVector(mouseX, mouseY));
         hovered = (dist < size/2.0);
         return hovered;
+    }
+
+    @Override
+    public void displayToolTip() {
+        if (hovered) {
+            int x = mouseX + ttOffset;
+            int y = mouseY + ttOffset;
+            float h = 10;
+            textSize(h);
+            float w = textWidth(toolTip);
+
+            fill(255);
+            rect(x, y, w + 2*ttPadding, h + 2*ttPadding);
+
+            fill(0);
+            textAlign(LEFT, TOP);
+            text(toolTip, x + ttPadding, y + ttPadding);
+        }
     }
 }
 

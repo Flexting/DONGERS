@@ -37,6 +37,10 @@ public abstract class PopupWindow {
             for (MenuElement element : elements) {
                 element.display();
             }
+            // Check for tooltips
+            for (MenuElement element : elements) {
+                element.displayToolTip();
+            }
             //onDisplay();
         }
     }
