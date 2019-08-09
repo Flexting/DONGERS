@@ -43,8 +43,8 @@ public class Image {
               y = pos.y + offsetY,    // Image pos with drawing offset
               dx = center.x / zoom,    // Draw image at x coord
               dy = center.y / zoom,    // Draw image at y coord
-              dw = width / zoom,     // Draw image with width
-              dh = height / zoom;    // Draw image with height
+              dw = width / zoom + 1,     // Draw image with width
+              dh = height / zoom + 1;    // Draw image with height
         int   sx1 = (int) (imgCenter.x - dx - x / zoom),    // Use image region x1
               sy1 = (int) (imgCenter.y - dy - y / zoom),    // Use image region y1
               sx2 = sx1 + (int) dw,    // Use image region x2
