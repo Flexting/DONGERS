@@ -11,10 +11,15 @@ public abstract class MenuElement {
 
     protected abstract boolean checkHovered();
 
+    public final void displayToolTip() {
+        if (hovered) {
+            onDisplayToolTip();
+        }
+    }
     // Overridable
-    public void displayToolTip() {}
-    public void onPressed() {}
-    public void onDragged() {}
+    public void onDisplayToolTip() {}
+
+    /* Mouse functions */
 
     public final boolean mousePressed() {
         hovered = checkHovered();
@@ -23,6 +28,12 @@ public abstract class MenuElement {
         }
         return hovered;
     }
+
+    // Overridable
+    public void onPressed() {}
+    public void onDragged() {}
+
+    /* Getters and Setters */
 
     public final void setPos(float x, float y) {
         this.pos.set(x, y);
@@ -76,7 +87,7 @@ public abstract class MenuButton extends MenuElement {
     private String toolTip;
 
     public MenuButton(String imgPath) {
-        this(imgPath, "");
+        this(imgPath, null);
     }
 
     public MenuButton(String imgPath, String toolTip) {
@@ -110,8 +121,9 @@ public abstract class MenuButton extends MenuElement {
     }
 
     @Override
-    public void displayToolTip() {
-        if (hovered) {
+    public void onDisplayToolTip() {
+        // Display if a tool-tip exists
+        if (toolTip != null) {
             int x = mouseX + ttOffset;
             int y = mouseY + ttOffset;
             float h = 10;
