@@ -37,8 +37,8 @@ private void initialise() {
 
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
-    //characters.add(new Entity(new DraggableImage(sketchPath() + "/images/playerIcons/Scott.jpg")));
-    inputImage.setImage(loadImage(sketchPath() + "/Forest.png"));
+    //characters.add(new Entity(new DraggableImage(sketchPath() + "/data/images/playerIcons/Scott.jpg")));
+    inputImage.setImage(loadImage(sketchPath() + "/data/Forest.png"));
     grid.createGrid();
     // ***** Remove these lines in final version
     

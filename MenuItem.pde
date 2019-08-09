@@ -71,7 +71,7 @@ public abstract class MenuButton extends MenuElement {
     private PImage img;
 
     public MenuButton(String imgPath) {
-        this.img = loadImage(sketchPath() + "/images/" + imgPath);
+        this.img = loadImage(sketchPath() + "/data/images/" + imgPath);
     }
 
     public void display() {
