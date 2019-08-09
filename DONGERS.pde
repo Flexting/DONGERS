@@ -2,6 +2,7 @@
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.UIManager;
 
 JFileChooser jfc;
 
@@ -36,11 +37,7 @@ public void setup() {
 }
 
 private void initialise() {
-    // File Chooser
-    jfc = new JFileChooser(sketchPath());
-    jfc.setAcceptAllFileFilterUsed(false);
-    FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG and JPG images", "png", "jpg", "jpeg");
-    jfc.addChoosableFileFilter(filter);
+    initialiseFileChooser();
     
     inputImage = new DraggableImage();
     grid = new Grid();
@@ -62,6 +59,16 @@ private void initialise() {
     this.menu = menu;
 
     gridMenu = new GridMenu(grid);
+}
+
+public void initialiseFileChooser() {
+    try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (Exception e) {}
+    jfc = new JFileChooser(sketchPath());
+    jfc.setAcceptAllFileFilterUsed(false);
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG and JPG images", "png", "jpg", "jpeg", "gif");
+    jfc.addChoosableFileFilter(filter);
 }
 
 public void draw() {
