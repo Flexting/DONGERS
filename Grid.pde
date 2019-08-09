@@ -121,6 +121,8 @@ public class Grid {
     }
 
     public void createGrid() {
+        if (inputImage.img == null) return;
+
         PGraphics grid = createGraphics(inputImage.img.width, inputImage.img.height);
         grid.beginDraw();
 

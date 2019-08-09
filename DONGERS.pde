@@ -212,7 +212,7 @@ public void moveImage(int direction, int amount) {
 }
 
 private void scaleImageToScreen() {
-    if (inputImage == null) return;
+    if (inputImage.img == null) return;
 
     float xRatio = width / (float) inputImage.img.width;
     float yRatio = height / (float) inputImage.img.height;
@@ -236,6 +236,8 @@ public void showGridMenu() {
 }
 
 public void rotateImageRight() {
+    if (inputImage.img == null) return;
+
     PImage img = new PImage(inputImage.img.height, inputImage.img.width);
 
     img.loadPixels();
