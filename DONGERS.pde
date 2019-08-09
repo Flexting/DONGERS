@@ -1,5 +1,9 @@
 
 import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+JFileChooser jfc;
 
 // Can Modify
 float zoom = 1;    // Zoom level of the image
@@ -19,6 +23,7 @@ boolean dragging = false;   // If the image is being dragged
 
 boolean shiftHeld = false;
 
+
 // Constants
 private static final float MIN_ZOOM = 0.05;
 private static final float MAX_ZOOM = 5.0;
@@ -31,10 +36,16 @@ public void setup() {
 }
 
 private void initialise() {
+    // File Chooser
+    jfc = new JFileChooser(sketchPath());
+    jfc.setAcceptAllFileFilterUsed(false);
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG and JPG images", "png", "jpg", "jpeg");
+    jfc.addChoosableFileFilter(filter);
+    
     inputImage = new DraggableImage();
     grid = new Grid();
     characters = new ArrayList<Entity>();
-
+        
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
     //characters.add(new Entity(new DraggableImage(sketchPath() + "/data/images/playerIcons/Scott.jpg")));
@@ -217,6 +228,14 @@ private void scaleImageToScreen() {
     float xRatio = width / (float) inputImage.img.width;
     float yRatio = height / (float) inputImage.img.height;
     zoom = (xRatio < yRatio) ? xRatio : yRatio;
+}
+
+public void chooseImage() {
+    int returnValue = jfc.showOpenDialog(null);
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+        File selectedFile = jfc.getSelectedFile();
+        imageChosen(selectedFile);
+    }    
 }
 
 public void imageChosen(File file) {

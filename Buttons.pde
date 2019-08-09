@@ -17,7 +17,7 @@ public class LoadImageButton extends MenuButton {
 
     @Override
     public void onPressed() {
-        selectInput("Select an image", "imageChosen");  
+        chooseImage();
     }
 }
 
