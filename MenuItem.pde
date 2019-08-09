@@ -4,6 +4,7 @@ public abstract class MenuElement {
     protected PopupWindow window;
 
     protected boolean hovered = false;
+    protected boolean selected = false;
     protected PVector pos = new PVector();
     protected PVector offset = new PVector();
 
@@ -12,9 +13,8 @@ public abstract class MenuElement {
     protected abstract boolean checkHovered();
 
     public final void displayToolTip() {
-        if (hovered) {
-            onDisplayToolTip();
-        }
+        strokeWeight(2);
+        onDisplayToolTip();
     }
     // Overridable
     public void onDisplayToolTip() {}
@@ -24,14 +24,21 @@ public abstract class MenuElement {
     public final boolean mousePressed() {
         hovered = checkHovered();
         if (hovered) {
+            selected = true;
             onPressed();
         }
         return hovered;
     }
 
+    public final void mouseReleased() {
+        onReleased();
+        selected = false;
+    }
+
     // Overridable
     public void onPressed() {}
     public void onDragged() {}
+    public void onReleased() {}
 
     /* Getters and Setters */
 
@@ -123,16 +130,17 @@ public abstract class MenuButton extends MenuElement {
     @Override
     public void onDisplayToolTip() {
         // Display if a tool-tip exists
-        if (toolTip != null) {
+        if (hovered && toolTip != null) {
             int x = mouseX + ttOffset;
             int y = mouseY + ttOffset;
             float h = 10;
             textSize(h);
             float w = textWidth(toolTip);
 
+            // Rectangle
             fill(255);
             rect(x, y, w + 2*ttPadding, h + 2*ttPadding);
-
+            // Text
             fill(0);
             textAlign(LEFT, TOP);
             text(toolTip, x + ttPadding, y + ttPadding);
@@ -141,6 +149,9 @@ public abstract class MenuButton extends MenuElement {
 }
 
 public abstract class MenuSlider extends MenuElement {
+
+    private static final int ttOffset = -15; // Tool-tip Y offset
+    private static final int ttPadding = 5; // Tool-tip X/Y padding
 
     protected Number min, max, step, value;
     private PVector dimensions;
@@ -156,9 +167,8 @@ public abstract class MenuSlider extends MenuElement {
 
     public void display() {
         stroke(0);
-        float y = offset.y + pos.y + dimensions.y / 2;
-
         PVector realPos = getRealPos();
+        float y = realPos.y + dimensions.y / 2;
         float x1 = realPos.x + barStart;
         float x2 = realPos.x + barEnd;
 
@@ -205,6 +215,34 @@ public abstract class MenuSlider extends MenuElement {
         }
     }
 
+    @Override
+    public void onDisplayToolTip() {
+        Float adjusted = getAdjustedValue();
+        if (selected && adjusted != null) {
+            String toolTip = getValueString();
+
+            // Get exact pin location
+            PVector realPos = getRealPos();
+            int pinX = (int) (realPos.x + barStart + adjusted * barWidth);
+            int pinY = (int) (realPos.y);
+
+            // Get location of top-left relative to pin
+            float h = 10;
+            textSize(h);
+            float w = textWidth(toolTip);
+            int x = pinX - ttPadding - (int) (w/2);
+            int y = pinY + ttOffset;
+
+            // Rectangle
+            fill(255);
+            rect(x, y, w + 2*ttPadding, h + 2*ttPadding);
+            // Text
+            fill(0);
+            textAlign(LEFT, TOP);
+            text(toolTip, x + ttPadding, y + ttPadding);
+        }
+    }
+
     private Float getAdjustedValue() {
         // Value between 0.0 and 1.0
         float numerator = value.floatValue() - min.floatValue();
@@ -216,6 +254,8 @@ public abstract class MenuSlider extends MenuElement {
     }
 
     // -- Getters and Setters --
+
+    public abstract String getValueString();
 
     public boolean setValue(Integer value) {
         if (Math.abs(this.value.intValue() - value) >= step.intValue()
@@ -256,6 +296,10 @@ public class MenuIntSlider extends MenuSlider {
     public int getValue() {
         return this.value.intValue();
     }
+
+    public String getValueString() {
+        return Integer.toString(this.value.intValue());
+    }
 }
 
 public class MenuFloatSlider extends MenuSlider {
@@ -266,5 +310,9 @@ public class MenuFloatSlider extends MenuSlider {
 
     public float getValue() {
         return this.value.floatValue();
+    }
+
+    public String getValueString() {
+        return String.format("%.2f", this.value.floatValue());
     }
 }

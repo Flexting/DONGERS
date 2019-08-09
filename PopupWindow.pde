@@ -73,8 +73,12 @@ public abstract class PopupWindow {
     }
 
     public final void mouseReleased() {
-        deselectWindow();
-        selectedElement = null;
+        if (selectedElement != null) {
+            selectedElement.mouseReleased();
+            selectedElement = null;
+        } else {
+            deselectWindow();
+        }
     }
 
     private boolean menuRectPressed() {
