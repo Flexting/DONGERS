@@ -40,10 +40,10 @@ public class DraggableImage extends Image {
 
     public void moveImage(int direction, int amount) {
         switch (direction) {
-            case UP:    pos.y -= amount; break;
-            case DOWN:  pos.y += amount; break;
-            case LEFT:  pos.x -= amount; break;
-            case RIGHT: pos.x += amount; break;
+            case UP:    pos.y += amount; break;
+            case DOWN:  pos.y -= amount; break;
+            case LEFT:  pos.x += amount; break;
+            case RIGHT: pos.x -= amount; break;
             //default: println("Invalid direction " + direction); break;
         }
     }
