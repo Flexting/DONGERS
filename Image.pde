@@ -25,6 +25,11 @@ public class Image {
         this.pos = pos;
     }
 
+    
+    public PImage getImage() {
+        return img.copy();
+    }
+    
     public PVector getPos() {
         return this.pos;
     }

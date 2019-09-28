@@ -13,6 +13,7 @@ float zoom = 1;    // Zoom level of the image
 DraggableImage inputImage;    // Image displayed on screen
 Entity selectedEntity;
 ArrayList<Entity> characters;
+ArrayList<Thumbnail> mapThumbnails;
 Grid grid;
 
 Menu menu;
@@ -42,6 +43,7 @@ private void initialise() {
     inputImage = new DraggableImage();
     grid = new Grid();
     characters = new ArrayList<Entity>();
+    mapThumbnails = new ArrayList<Thumbnail>();
         
     //selectInput("Select an image", "imageChosen");  
     // ***** Remove these lines in final version
@@ -69,6 +71,7 @@ public void initialiseFileChooser() {
     jfc.setAcceptAllFileFilterUsed(false);
     FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG and JPG images", "png", "jpg", "jpeg", "gif");
     jfc.addChoosableFileFilter(filter);
+    jfc.setMultiSelectionEnabled(true);
 }
 
 public void draw() {
@@ -84,6 +87,18 @@ public void draw() {
         
         for (Entity character : characters) {
             character.display(imgOffset.x, imgOffset.y);
+        }
+        
+        final int mapThumbnailSize = mapThumbnails.size();
+        for (int i = 0; i < mapThumbnailSize && mapThumbnailSize > 1; i++) {
+            Thumbnail mapThumbnail = mapThumbnails.get(i);
+            boolean isHovered = mapThumbnail.isHovered();
+            float thumbnailSize = mapThumbnail.imageSize;
+            float spacing = 10;
+            float x = (isHovered) ? thumbnailSize/2 : 0;
+            float y = (thumbnailSize + spacing) * i;
+            y += height/2.0 - (thumbnailSize + spacing) * mapThumbnailSize/2 + thumbnailSize/2 + spacing/2;
+            mapThumbnail.display(x, y);
         }
     }
 
@@ -117,6 +132,14 @@ public void mousePressed() {
         selectedWindow = menu;
     }
     else {
+    // Map thumnail image pressed
+        Thumbnail thumbnail = mapThumbnailPressed();
+        if (thumbnail != null) {
+            inputImage.setImage(thumbnail.originalImage); 
+            resetImage();
+            grid.createGrid();
+            return;
+        }
         // Character pressed
         selectedEntity = null;
         for (Entity character : characters) {
@@ -240,16 +263,23 @@ private void scaleImageToScreen() {
 public void chooseImage() {
     int returnValue = jfc.showOpenDialog(null);
     if (returnValue == JFileChooser.APPROVE_OPTION) {
-        File selectedFile = jfc.getSelectedFile();
-        imageChosen(selectedFile);
+        File[] selectedFiles = jfc.getSelectedFiles();
+        imagesChosen(selectedFiles);
     }    
 }
 
-public void imageChosen(File file) {
-    if (file != null && file.exists()) {
-        inputImage.setImage(loadImage(file.getAbsolutePath())); 
-        resetImage();
-        grid.createGrid();
+public void imagesChosen(File[] files) {
+    for (int i = 0; i < files.length; i++) {
+        File file = files[i];
+        if (file != null && file.exists()) {
+            PImage img = loadImage(file.getAbsolutePath());
+            if (i == 0) {
+                inputImage.setImage(img); 
+                resetImage();
+                grid.createGrid();
+            }
+            mapThumbnails.add(new Thumbnail(img));
+        }
     }
 }
 
@@ -288,4 +318,13 @@ public void resetImage() {
     for (Entity character : characters) {
         character.resetPos();
     }
+}
+
+public Thumbnail mapThumbnailPressed() {
+    for (Thumbnail thumbnail : mapThumbnails) {
+        if (thumbnail.mousePressed()) {
+            return thumbnail;    
+        }
+    }
+    return null;
 }
