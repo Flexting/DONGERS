@@ -45,11 +45,11 @@ private void initialise() {
     characters = new ArrayList<Entity>();
     mapThumbnails = new ArrayList<Thumbnail>();
         
-    chooseImage();
+    //chooseImage();
     // ***** Remove these lines in final version
-    //characters.add(new Entity(new DraggableImage(sketchPath() + "/data/images/playerIcons/Scott.jpg")));
-    //inputImage.setImage(loadImage(sketchPath() + "/data/Forest.png"));
-    //grid.createGrid();
+    characters.add(new Entity(new DraggableImage(sketchPath() + "/data/images/playerIcons/Scott.jpg")));
+    inputImage.setImage(loadImage(sketchPath() + "/data/Forest.png"));
+    grid.createGrid();
     // ***** Remove these lines in final version
     
     Menu menu = new Menu();
@@ -204,10 +204,16 @@ public void keyPressed() {
         case SHIFT: shiftHeld = true; break;
         // G: Toggle grid visibility
         case 71: toggleGrid(); break;
+        // R: Reset board
+        case 82: resetImage(); break;
         // Plus: Enlarge grid
         case 61: case 107: zoomGrid(1); break;
         // Minus: Shrink grid
         case 45: case 109: zoomGrid(-1); break;
+        // [: Rotate anti-clockwise 90
+        case 91: rotateImageLeft(); break;
+        // ]: Rotate clockwise 90
+        case 93: rotateImageRight(); break;
     }
     // 1-9
     if (keyCode >= 49 && keyCode <= 57) {
@@ -299,7 +305,9 @@ public void showGridMenu() {
     gridMenu.show();
 }
 
-public void rotateImageRight() {
+public void rotateImageLeft() { rotateImage(false); }
+public void rotateImageRight() { rotateImage(true); }
+public void rotateImage(boolean right) {
     if (inputImage.img == null) return;
 
     PImage img = new PImage(inputImage.img.height, inputImage.img.width);
@@ -307,7 +315,11 @@ public void rotateImageRight() {
     img.loadPixels();
     for (int x = 0; x < inputImage.img.width; ++x) {
         for (int y = 0; y < inputImage.img.height; ++y) {
-            img.pixels[(img.width - 1 - y) + x * img.width] = inputImage.img.pixels[x + y * inputImage.img.width];
+            if (right) {
+                img.pixels[(img.width - 1 - y) + x * img.width] = inputImage.img.pixels[x + y * inputImage.img.width];
+            } else {
+                img.pixels[y + x * img.width] = inputImage.img.pixels[(inputImage.img.width - 1 - x) + y * inputImage.img.width];
+            }
         }
     }
     img.updatePixels();
@@ -316,7 +328,7 @@ public void rotateImageRight() {
 
     // Move character heads given the origin of the image
     for (Entity character : characters) {
-        character.rotateRight();
+        character.rotate(right);
     }
 }
 

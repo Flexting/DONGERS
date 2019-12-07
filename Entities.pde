@@ -32,10 +32,12 @@ public class Entity {
         pos.set(0, 0);
     }
 
-    public void rotateRight() {
+    public void rotate(boolean right) {
         float x = pos.x;
         float y = pos.y;
-        pos.set(-y, x);
+        // Why is ternary throwing a compiler error?
+        // right ?  pos.set(-y, x) : pos.set(y, -x);
+        if (right) pos.set(-y, x); else pos.set(y, -x);
     }
 
     /* Mouse functions */
