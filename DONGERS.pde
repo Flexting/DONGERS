@@ -45,11 +45,11 @@ private void initialise() {
     characters = new ArrayList<Entity>();
     mapThumbnails = new ArrayList<Thumbnail>();
         
-    //selectInput("Select an image", "imageChosen");  
+    chooseImage();
     // ***** Remove these lines in final version
     //characters.add(new Entity(new DraggableImage(sketchPath() + "/data/images/playerIcons/Scott.jpg")));
-    inputImage.setImage(loadImage(sketchPath() + "/data/Forest.png"));
-    grid.createGrid();
+    //inputImage.setImage(loadImage(sketchPath() + "/data/Forest.png"));
+    //grid.createGrid();
     // ***** Remove these lines in final version
     
     Menu menu = new Menu();
@@ -115,8 +115,7 @@ public void mouseWheel(MouseEvent event) {
     if (imageZoom) {
         zoom(count / 10.0);
     } else {
-        float size = grid.getSize() + 5 * count;
-        grid.setSize(size);
+        zoomGrid(count);
     }
 }
 
@@ -201,10 +200,14 @@ public void mouseReleased() {
 
 public void keyPressed() {
     switch (keyCode) {
-        // Shift
+        // Shift: For scrolling grid size
         case SHIFT: shiftHeld = true; break;
-        // G
+        // G: Toggle grid visibility
         case 71: toggleGrid(); break;
+        // Plus: Enlarge grid
+        case 61: case 107: zoomGrid(1); break;
+        // Minus: Shrink grid
+        case 45: case 109: zoomGrid(-1); break;
     }
     // 1-9
     if (keyCode >= 49 && keyCode <= 57) {
@@ -246,6 +249,11 @@ public void zoom(float amount) {
     imgPos.y = imgPos.y * scale + deltaPos.y;
     
     zoom = newZoom;
+}
+
+public void zoomGrid(float amount) {
+    float size = grid.getSize() + 5 * amount;
+    grid.setSize(size);
 }
 
 public void moveImage(int direction, int amount) {
